@@ -719,3 +719,192 @@ document.getElementById('contactForm').addEventListener('submit', function(event
         }
     });
 });
+
+// Fixed carousel initialization and navigation
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize carousels immediately on page load
+    initializeAllCarousels();
+    
+    // Re-initialize after a slight delay to ensure everything is loaded
+    setTimeout(initializeAllCarousels, 300);
+    
+    // Function to initialize all visible carousels
+    function initializeAllCarousels() {
+        // Find all product cards with carousels
+        const allProductCards = document.querySelectorAll('.product-card');
+        
+        // Initialize carousels for all product cards that are visible
+        allProductCards.forEach(card => {
+            if (isElementVisible(card)) {
+                initializeCarousel(card);
+            }
+        });
+    }
+    
+    // Check if an element is visible
+    function isElementVisible(element) {
+        return element.offsetParent !== null;
+    }
+    
+    // Function to initialize a single carousel
+    function initializeCarousel(card) {
+        const slides = card.querySelectorAll('.carousel-slide');
+        if (slides.length <= 1) return; // Skip if only one image
+        
+        const productImage = card.querySelector('.product-image');
+        const track = card.querySelector('.carousel-track');
+        
+        // Skip if already initialized
+        if (card.dataset.carouselInitialized === 'true') return;
+        
+        // Create or get navigation elements
+        let dotsContainer = card.querySelector('.carousel-dots');
+        let prevButton = card.querySelector('.carousel-button.prev');
+        let nextButton = card.querySelector('.carousel-button.next');
+        
+        if (!dotsContainer) {
+            dotsContainer = document.createElement('div');
+            dotsContainer.className = 'carousel-dots';
+            productImage.appendChild(dotsContainer);
+        }
+        
+        if (!prevButton) {
+            prevButton = document.createElement('button');
+            prevButton.className = 'carousel-button prev';
+            prevButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            productImage.appendChild(prevButton);
+        }
+        
+        if (!nextButton) {
+            nextButton = document.createElement('button');
+            nextButton.className = 'carousel-button next';
+            nextButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            productImage.appendChild(nextButton);
+        }
+        
+        // Create dots for each slide
+        dotsContainer.innerHTML = '';
+        slides.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.className = 'dot';
+            if (index === 0) dot.classList.add('active');
+            dotsContainer.appendChild(dot);
+        });
+        
+        // Set up carousel state
+        let currentIndex = 0;
+        const dots = dotsContainer.querySelectorAll('.dot');
+        
+        // Function to go to a specific slide
+        function goToSlide(index) {
+            if (!track) return;
+            
+            // Handle wrap-around
+            if (index < 0) {
+                index = slides.length - 1;
+            } else if (index >= slides.length) {
+                index = 0;
+            }
+            
+            currentIndex = index;
+            
+            // Update track position
+            track.style.transition = 'transform 0.3s ease-out';
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+            
+            // Update dots
+            dots.forEach((dot, i) => {
+                if (i === currentIndex) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+        
+        // Event listener for previous button
+        prevButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            goToSlide(currentIndex - 1);
+        });
+        
+        // Event listener for next button
+        nextButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            goToSlide(currentIndex + 1);
+        });
+        
+        // Event listeners for dots
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                goToSlide(index);
+            });
+        });
+        
+        // Add touch swiping capability
+        let touchStartX = 0;
+        let touchEndX = 0;
+        const minSwipeDistance = 50; // Minimum distance to trigger swipe
+        
+        productImage.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        
+        productImage.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+        
+        function handleSwipe() {
+            const distance = touchStartX - touchEndX;
+            if (Math.abs(distance) > minSwipeDistance) {
+                if (distance > 0) {
+                    // Swipe left, go to next slide
+                    goToSlide(currentIndex + 1);
+                } else {
+                    // Swipe right, go to previous slide
+                    goToSlide(currentIndex - 1);
+                }
+            }
+        }
+        
+        // Mark as initialized
+        card.dataset.carouselInitialized = 'true';
+    }
+    
+    // Add function to initialize carousels for dynamically loaded sections
+    window.initializeCarouselsInSection = function(productCards) {
+        if (Array.isArray(productCards) || productCards instanceof NodeList) {
+            productCards.forEach(card => initializeCarousel(card));
+        } else if (typeof productCards === 'string') {
+            // If a section ID is provided
+            const section = document.getElementById(productCards);
+            if (section) {
+                const cards = section.querySelectorAll('.product-card');
+                cards.forEach(card => initializeCarousel(card));
+            }
+        }
+    };
+    
+    // Re-initialize carousels when filter buttons are clicked
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Short delay to allow section to be displayed
+            setTimeout(() => {
+                const targetId = this.dataset.target;
+                if (targetId) {
+                    const section = document.getElementById(targetId);
+                    if (section) {
+                        const cards = section.querySelectorAll('.product-card');
+                        cards.forEach(card => initializeCarousel(card));
+                    }
+                }
+            }, 300);
+        });
+    });
+});
