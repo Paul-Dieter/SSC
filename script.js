@@ -635,64 +635,81 @@ document.addEventListener('DOMContentLoaded', function() {
     // ---------- Forms ----------
     
     // Handle contact form submission
-    const contactForm = document.getElementById('contactForm');
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form values
-            const name = document.getElementById('name').value;
-            
-            // Process form data
-            const formData = new FormData(this);
-            
-            // You can uncomment this if you want to submit the form via AJAX
-            /*
-            fetch(this.action, {
-                method: this.method,
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            }).then(response => {
-                if (response.ok) {
-                    showSuccessMessage(name);
-                } else {
-                    alert('Oops! Something went wrong.');
-                }
-            });
-            */
-            
-            // For now, just show success message
-            showSuccessMessage(name);
-        });
+    // Handle contact form submission
+const contactForm = document.getElementById('contactForm');
+if (contactForm) {
+    contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
         
-        // Show success message function
-        function showSuccessMessage(name) {
-            // Show success message
-            const formContainer = contactForm.parentNode;
-            
-            // Create success message
-            const successMessage = document.createElement('div');
-            successMessage.className = 'success-message';
-            successMessage.innerHTML = `
-                <h3>Thank You, ${name}!</h3>
-                <p>Your message has been sent successfully. We'll get back to you soon.</p>
-                <button class="btn-secondary" id="resetForm">Send Another Message</button>
-            `;
-            
-            // Hide form and show success message
-            contactForm.style.display = 'none';
-            formContainer.appendChild(successMessage);
-            
-            // Reset form button
-            document.getElementById('resetForm').addEventListener('click', function() {
-                contactForm.reset();
-                contactForm.style.display = 'block';
-                successMessage.remove();
-            });
-        }
+        // Get form values
+        const name = document.getElementById('name').value;
+        const submitButton = this.querySelector('button[type="submit"]');
+        
+        // Disable button and show loading state
+        submitButton.disabled = true;
+        submitButton.textContent = 'Sending...';
+        
+        // Process form data
+        const formData = new FormData(this);
+        
+        // Send data to Formspree
+        fetch('https://formspree.io/f/xwplngrq', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                // If submission was successful, show success message
+                showSuccessMessage(name);
+                return response.json();
+            } else {
+                // If there was an error, throw it to be caught below
+                return response.json().then(data => {
+                    throw new Error(data.error || 'Form submission failed');
+                });
+            }
+        })
+        .catch(error => {
+            // Handle any errors
+            console.error('Error:', error);
+            alert('There was a problem submitting your form. Please try again later.');
+        })
+        .finally(() => {
+            // Re-enable the submit button
+            submitButton.disabled = false;
+            submitButton.textContent = 'Send Message';
+        });
+    });
+    
+    // Show success message function
+    function showSuccessMessage(name) {
+        // Show success message
+        const formContainer = contactForm.parentNode;
+        
+        // Create success message
+        const successMessage = document.createElement('div');
+        successMessage.className = 'success-message';
+        successMessage.innerHTML = `
+            <h3>Thank You, ${name}!</h3>
+            <p>Your message has been sent successfully. We'll get back to you soon.</p>
+            <button class="btn-secondary" id="resetForm">Send Another Message</button>
+        `;
+        
+        // Hide form and show success message
+        contactForm.style.display = 'none';
+        formContainer.appendChild(successMessage);
+        
+        // Reset form button
+        document.getElementById('resetForm').addEventListener('click', function() {
+            contactForm.reset();
+            contactForm.style.display = 'block';
+            successMessage.remove();
+        });
     }
+}
 });
 
 // ---------- Global Functions ----------
