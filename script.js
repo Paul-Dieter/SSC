@@ -789,4 +789,13 @@ function addBackToCategoriesButton() {
         // Insert the button before the contact section
         contactSection.parentNode.insertBefore(buttonContainer, contactSection);
     }
+    
+    // Set minimum date to today for event date
+document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date().toISOString().split('T')[0];
+    const eventDateInput = document.getElementById('event-date');
+    if (eventDateInput) {
+        eventDateInput.setAttribute('min', today);
+    }
+});
 }
