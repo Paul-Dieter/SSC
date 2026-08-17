@@ -2293,15 +2293,24 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
 .jumpbar a:hover { color: var(--gold-text); }
 .jumpbar a:hover::after { transform: scaleX(1); transform-origin: left; }
 
+/* This used to become a horizontal scroller here, with the scrollbar hidden
+   on top of it, so on a phone every category past the right edge was both
+   invisible and undiscoverable -- there was no affordance left to suggest
+   the row moved at all. Wrapping costs a centimetre of height and shows the
+   whole shop at a glance, which is the better trade for the main way in. */
 @media (max-width: 768px) {
+  .jumpbar { padding: 11px 0; }
+
   .jumpbar-inner {
-    justify-content: flex-start;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    gap: 24px;
-    -webkit-overflow-scrolling: touch;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 9px 18px;
   }
-  .jumpbar-inner::-webkit-scrollbar { display: none; }
+
+  .jumpbar a {
+    font-size: 0.64rem;
+    letter-spacing: 1.2px;
+  }
 }
 
 /* ---------- Shop: compact section head ---------- */
