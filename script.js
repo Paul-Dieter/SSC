@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Signature Setup: shared behaviour
+   Signature Setup & Co: shared behaviour
    Mirrors the interactions in landing.component.ts: a nav that frosts on
    scroll, a hamburger pane, and scroll-triggered reveals. Adds a lightbox
    for the service-page image grids.
@@ -103,6 +103,15 @@
   window.matchMedia(DESKTOP).addEventListener('change', function () { closeAllMenus(); });
 
   if (hamburger && navLinks) {
+    function closeNav() {
+      if (!navLinks.classList.contains('open')) return;
+      navLinks.classList.remove('open');
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      closeAllMenus();
+      syncNav();
+    }
+
     hamburger.addEventListener('click', function () {
       var open = navLinks.classList.toggle('open');
       hamburger.classList.toggle('open', open);
@@ -114,15 +123,52 @@
     // Close the pane after tapping a link (the chevron is a button, so it is
     // not caught here and can expand its submenu in place)
     navLinks.querySelectorAll('a').forEach(function (link) {
-      link.addEventListener('click', function () {
-        navLinks.classList.remove('open');
-        hamburger.classList.remove('open');
-        hamburger.setAttribute('aria-expanded', 'false');
-        closeAllMenus();
-        syncNav();
-      });
+      link.addEventListener('click', closeNav);
+    });
+
+    // Tapping anywhere off the pane closes it. The hamburger lives inside
+    // .navbar, so this never fights its own toggle.
+    document.addEventListener('click', function (event) {
+      if (!event.target.closest || !event.target.closest('.navbar')) closeNav();
+    });
+
+    // Escape closes the pane too, matching the submenu behaviour above
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') closeNav();
     });
   }
+
+  /* ---------- Back to top (phones only) ----------
+     Injected rather than added to five templates. Hidden above 768px by CSS. */
+  var toTop = document.createElement('button');
+  toTop.className = 'to-top';
+  toTop.type = 'button';
+  toTop.setAttribute('aria-label', 'Back to top');
+  toTop.innerHTML =
+    '<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<polyline points="3 7.5 7 3.5 11 7.5"/><line x1="7" y1="3.5" x2="7" y2="11"/></svg>';
+  document.body.appendChild(toTop);
+
+  var TOP_SHOW_AT = 600;
+  var topTicking = false;
+
+  function syncToTop() {
+    toTop.classList.toggle('visible', window.scrollY > TOP_SHOW_AT);
+    topTicking = false;
+  }
+
+  window.addEventListener('scroll', function () {
+    if (topTicking) return;
+    topTicking = true;
+    window.requestAnimationFrame(syncToTop);
+  }, { passive: true });
+
+  syncToTop();
+
+  toTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+  });
 
   /* ---------- Mark the current page in the nav ---------- */
   var here = window.location.pathname.split('/').pop() || 'index.html';
@@ -328,6 +374,26 @@
       save();
       render();
     });
+
+    // While the enquiry bar is up it owns the bottom of the screen, so the
+    // back-to-top button rides inside it, to the right of Enquire, rather
+    // than floating over it. It moves back out when the bar goes away.
+    if (window.MutationObserver) {
+      var placeToTop = function () {
+        if (!toTop) return;
+        if (bar.classList.contains('visible')) {
+          if (toTop.parentNode !== bar) bar.appendChild(toTop);
+          toTop.classList.add('to-top--in-bar');
+        } else {
+          if (toTop.parentNode !== document.body) document.body.appendChild(toTop);
+          toTop.classList.remove('to-top--in-bar');
+        }
+      };
+      new window.MutationObserver(placeToTop).observe(bar, {
+        attributes: true, attributeFilter: ['class']
+      });
+      placeToTop();
+    }
 
     Array.prototype.forEach.call(document.querySelectorAll('.enquiry-bar-go'), function (link) {
       link.addEventListener('click', function (event) {

@@ -129,6 +129,12 @@ body::after {
 
 .container--narrow { max-width: 900px; }
 
+/* On a phone, width:90% plus 15px padding throws away ~67px of a 375px
+   screen. Use the full width and a single sensible gutter instead. */
+@media (max-width: 576px) {
+  .container { width: 100%; padding: 0 18px; }
+}
+
 .section {
   position: relative;
   padding: clamp(70px, 9vw, 120px) 0;
@@ -182,7 +188,12 @@ body::after {
   font-size: 1.25em;
   margin-left: 0.12em;
   vertical-align: -0.08em;
-  padding-right: 0.2em; /* room for swashes */
+  /* The foil gradient is clipped to the glyphs, so the paint box needs room for
+     Great Vibes' long swashes and descenders - without this the tail of the p in
+     "in one place" and the g in "& Signage" get sliced off. Padding on an inline
+     box extends the paint area without touching the line height. */
+  padding-right: 0.2em;
+  padding-bottom: 0.18em;
 }
 
 .eyebrow {
@@ -708,7 +719,10 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
 .nav-item.open .nav-menu-list li:nth-child(7) { transition-delay: 0.28s; }
 .nav-item.open .nav-menu-list li:nth-child(8) { transition-delay: 0.32s; }
 
-/* Mobile dropdown: frosted acrylic pane */
+/* ---------- Mobile menu: one ivory sheet, one rhythm ----------
+   Every row shares a 20px left edge and a >=44px tap height. The chevron is a
+   quiet round button rather than a boxed table cell, and the submenu indents
+   under its parent instead of restating the category name. */
 @media (max-width: 1180px) {
   .navbar .hamburger { display: flex; }
 
@@ -722,6 +736,7 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
     right: 0;
     /* solid ivory, because nested backdrop-filters (navbar + pane) don't compose reliably */
     background-color: var(--ivory);
+    border-top: 1px solid var(--gold-faint);
     border-bottom: 1px solid var(--gold-soft);
     flex-direction: column;
     align-items: stretch;
@@ -733,68 +748,89 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
     box-shadow: 0 24px 60px rgba(28, 25, 19, 0.15);
   }
 
-  /* Tall enough for every submenu expanded, and scrollable past that */
+  /* Tall enough for every submenu expanded, and scrollable past that.
+     vh first so browsers without svh still get a usable panel. */
   .navbar .nav-links.open {
-    max-height: calc(100svh - 88px);
+    max-height: calc(100vh - 104px);
+    max-height: calc(100svh - 104px);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
 
   .navbar .nav-home { display: block; }
 
-  .navbar .nav-links a {
+  /* Shared row treatment for Home and each service parent */
+  .navbar .nav-links > a,
+  .navbar .nav-links .nav-parent-row > a {
+    display: flex;
+    align-items: center;
+    min-height: 54px;
     font-family: var(--font-display);
-    font-size: 1.35rem;
+    font-size: 1.06rem;
     font-weight: 500;
-    letter-spacing: 1px;
+    letter-spacing: 0.2px;
+    line-height: 1.3;
     text-transform: none;
-    text-align: center;
+    text-align: left;
     padding: 14px 20px;
-    border-bottom: 1px solid var(--gold-faint);
+    border-bottom: none;
     color: var(--ink) !important;
     text-shadow: none !important;
   }
-  .navbar .nav-links a:hover {
+
+  .navbar .nav-links > a.nav-home { border-bottom: 1px solid var(--gold-faint); }
+
+  /* The desktop underline sits at bottom:-6px and collides with the row
+     dividers, and it only ever marked category rows, never Home. Drop it and
+     mark the current page with a gold edge instead - same for every row. */
+  .navbar .nav-links > a:not(.nav-cta)::after,
+  .navbar .nav-parent-row > a::after { display: none; }
+
+  .navbar .nav-links > a.is-current,
+  .navbar .nav-parent-row > a.is-current {
+    color: var(--gold-text) !important;
+    box-shadow: inset 3px 0 0 var(--gold);
+  }
+
+  .navbar .nav-links a:hover,
+  .navbar .nav-links a:active {
     background-color: var(--gold-faint);
     color: var(--gold-text) !important;
   }
-
-  .navbar .nav-links a.nav-cta {
-    font-family: var(--font-body);
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    background: var(--ink) !important;
-    color: var(--ivory) !important;
-    border-radius: 0;
-  }
-  .navbar .nav-links a.nav-cta::before { display: none; }
 
   /* ---- Tap-to-expand service menu ---- */
   .nav-item { position: static; }
 
   .nav-parent-row {
+    display: flex;
+    align-items: center;
     gap: 0;
     border-bottom: 1px solid var(--gold-faint);
   }
 
-  /* The category name still navigates; the chevron only expands */
-  .navbar .nav-links .nav-parent-row a {
-    flex: 1;
-    border-bottom: none;
-    text-align: left;
-    padding-left: 26px;
-  }
+  .navbar .nav-links .nav-parent-row > a { flex: 1; min-width: 0; }
 
   .navbar .nav-links .nav-toggle {
-    width: 60px;
-    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    margin-right: 10px;
     flex: none;
-    opacity: 0.8;
+    border: 0;
+    border-radius: 50%;
+    background-color: transparent;
     color: var(--gold-text);
-    border-left: 1px solid var(--gold-faint);
+    opacity: 1;
+    transition: transform 0.35s cubic-bezier(0.2, 0.65, 0.25, 1),
+                background-color 0.25s ease;
   }
 
   .navbar:not(.scrolled) .nav-links .nav-toggle { color: var(--gold-text); }
+  .navbar .nav-links .nav-toggle svg { width: 12px; height: 7px; }
+  .nav-item.open .nav-toggle { background-color: var(--gold-faint); }
 
   .nav-menu {
     position: static;
@@ -809,45 +845,93 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   }
 
   .nav-item--end .nav-menu { right: auto; }
-
-  .nav-item.open .nav-menu { max-height: 620px; }
+  .nav-item.open .nav-menu { max-height: 760px; }
 
   .nav-menu-inner {
-    padding: 0;
+    padding: 6px 0 10px;
     background-color: var(--champagne);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
     border: none;
     border-bottom: 1px solid var(--gold-faint);
     border-radius: 0;
-    box-shadow: inset 0 8px 14px -10px rgba(28, 25, 19, 0.18);
+    box-shadow: inset 0 10px 14px -12px rgba(28, 25, 19, 0.22);
   }
 
   .nav-menu-inner::before { content: none; }
 
-  .navbar .nav-links .nav-menu-label {
-    margin: 0;
-    padding: 16px 26px 8px;
-    border-bottom: none;
-    text-align: left;
-  }
+  /* the row above already names the category */
+  .navbar .nav-links .nav-menu-label { display: none; }
 
   .navbar .nav-links .nav-menu-list a {
-    font-size: 1.02rem;
-    padding: 11px 26px 11px 32px;
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    font-family: var(--font-body);
+    font-size: 0.86rem;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+    line-height: 1.45;
+    padding: 10px 20px 10px 34px;
     text-align: left;
     border-bottom: none;
     white-space: normal;
+    color: var(--ink-soft) !important;
   }
 
-  .nav-menu-list li:last-child a { padding-bottom: 18px; }
+  /* the 01/02 numerals are a desktop editorial device; a gold rule reads calmer */
+  .navbar .nav-links .nav-menu-list a .idx { display: none; }
+
+  .navbar .nav-links .nav-menu-list a .lbl { position: relative; }
+
+  .navbar .nav-links .nav-menu-list a .lbl::before {
+    content: "";
+    position: absolute;
+    left: -14px;
+    top: 0.68em;
+    width: 7px;
+    height: 1px;
+    background-color: var(--gold);
+    opacity: 0.6;
+  }
 
   .nav-menu-list li.is-divided {
-    margin: 4px 26px 0;
-    padding-top: 4px;
+    margin: 6px 20px 0;
+    padding-top: 6px;
+    border-top: 1px solid var(--gold-faint);
   }
 
-  .nav-menu-list li.is-divided a { padding-left: 6px; padding-right: 0; }
+  /* needs to out-specify .navbar .nav-links .nav-menu-list a, or the 20px
+     li margin stacks on top of the 34px padding and the row juts right */
+  .navbar .nav-links .nav-menu-list li.is-divided a { padding-left: 14px; padding-right: 20px; }
+  .navbar .nav-links .nav-menu-list li:last-child a { padding-bottom: 12px; }
+
+  /* Enquire reads as a button, not a full-bleed slab */
+  .navbar .nav-links a.nav-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50px;
+    margin: 18px 20px 22px;
+    padding: 14px 20px;
+    font-family: var(--font-body);
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    text-align: center;
+    background: var(--ink) !important;
+    color: var(--ivory) !important;
+    border-radius: 999px;
+    border-bottom: none;
+  }
+
+  .navbar .nav-links a.nav-cta::before { display: none; }
+  .navbar .nav-links a.nav-cta:hover,
+  .navbar .nav-links a.nav-cta:active {
+    background: var(--ink) !important;
+    color: var(--ivory) !important;
+  }
 
   /* No stagger on a tap-driven accordion */
   .nav-menu-list li { transition-delay: 0s !important; }
@@ -1586,6 +1670,81 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
 }
 
 
+/* ---------- Tiered packages (stationery / floral / planning) ---------- */
+.tier-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: clamp(18px, 2.2vw, 28px);
+}
+
+.tier-card {
+  display: flex;
+  flex-direction: column;
+  padding: 34px 28px 30px;
+  background-color: var(--paper);
+  border: 1px solid var(--gold-soft);
+  border-radius: var(--radius-card);
+  transition: var(--transition);
+}
+
+.tier-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lift);
+  border-color: var(--gold);
+}
+
+.tier-card h3 { font-size: 1.32rem; margin-bottom: 0.35rem; }
+
+.tier-meta {
+  font-size: 0.68rem;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.2rem;
+}
+
+.tier-price {
+  font-family: var(--font-display);
+  font-size: 1.85rem;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--gold-text);
+  margin-bottom: 1.3rem;
+}
+
+/* Guest-count pricing reuses the product price-tier list. */
+.tier-card .product-tiers { margin-bottom: 1.3rem; flex: none; }
+
+.tier-list {
+  list-style: none;
+  margin: 0 0 1.5rem;
+  flex: 1;
+}
+
+.tier-list li {
+  position: relative;
+  padding: 7px 0 7px 18px;
+  font-size: 0.83rem;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  border-bottom: 1px solid var(--gold-faint);
+}
+
+.tier-list li:last-child { border-bottom: 0; }
+
+.tier-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 15px;
+  width: 6px;
+  height: 1px;
+  background-color: var(--gold);
+}
+
+.tier-card .product-cta { align-self: flex-start; }
+
 /* ---------- Process steps ---------- */
 .steps {
   display: grid;
@@ -1915,10 +2074,6 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   gap: clamp(14px, 1.8vw, 24px);
 }
 
-@media (max-width: 576px) {
-  .product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-}
-
 .product {
   display: flex;
   flex-direction: column;
@@ -2006,6 +2161,122 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   border-color: var(--ink);
   color: var(--ivory);
 }
+
+/* Phones: two 146px columns cannot hold a product shot, a name and a price
+   table, so the card turns into a full-width row - image left, detail right.
+   That is both readable and shorter than the two-column grid it replaces. */
+@media (max-width: 576px) {
+  .product-grid { grid-template-columns: 1fr; gap: 14px; }
+
+  .product { flex-direction: row; }
+
+  .product-media {
+    width: 132px;
+    flex: none;
+    /* Drop the 4/5 box and let the column stretch to the row height, so a
+       card with a long size table gets a tall image instead of a white gap.
+       The floor keeps short cards (one or two tiers) from cropping to a sliver. */
+    aspect-ratio: auto;
+    min-height: 168px;
+  }
+
+  /* Taking the image out of flow stops its intrinsic height from setting the
+     row height - otherwise a tall portrait shot forces a gap above the button. */
+  .product-media img {
+    position: absolute;
+    inset: 0;
+  }
+
+  .product-info { padding: 14px 16px 16px; }
+  .product-name { font-size: 1.02rem; }
+}
+
+/* Very small handsets (320px class): give the detail column more room. */
+@media (max-width: 360px) {
+  .product-media { width: 104px; min-height: 150px; }
+  .product-info { padding: 12px 13px 14px; }
+  .product-tiers dt { letter-spacing: 0.4px; }
+}
+
+/* ---------- Shop: price tiers on a product card ---------- */
+.product-note {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 300;
+  line-height: 1.45;
+  color: var(--muted);
+  margin: 0;
+}
+
+.product-tiers {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-content: start;
+  margin: 4px 0 2px;
+  flex: 1;
+}
+
+/* Size tables (A5-A0) run to six rows: pair them up on roomier cards. */
+.product-tiers--split { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 16px; }
+
+@media (max-width: 576px) {
+  .product-tiers--split { grid-template-columns: 1fr; }
+}
+
+.product-tiers > div {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(176, 141, 87, 0.16);
+  /* Safety net: a label like "Footstand included" cannot shrink past its
+     longest word, so on a very narrow card let the price drop to its own
+     line rather than overflow (the card clips). */
+  flex-wrap: wrap;
+}
+
+.product-tiers > div:last-child { border-bottom: 0; }
+.product-tiers--split > div:nth-last-child(-n+2) { border-bottom: 0; }
+
+@media (max-width: 576px) {
+  .product-tiers--split > div:nth-last-child(2) { border-bottom: 1px solid rgba(176, 141, 87, 0.16); }
+  .product-tiers--split > div:last-child { border-bottom: 0; }
+}
+
+.product-tiers dt {
+  font-family: var(--font-body);
+  font-size: 0.67rem;
+  font-weight: 400;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  color: var(--muted);
+  /* Long labels ("Footstand included") must wrap rather than push the price
+     out of the card - the card clips its overflow. */
+  min-width: 0;
+}
+
+.product-tiers dd {
+  margin: 0 0 0 auto;
+  font-family: var(--font-body);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  color: var(--gold-text);
+  white-space: nowrap;
+}
+
+.product-addon {
+  font-family: var(--font-body);
+  font-size: 0.67rem;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 6px 0 0;
+}
+
+/* A single flat price keeps the old treatment but must still push the CTA down. */
+.product-price--solo { flex: 1; }
 
 /* ---------- Shop: service rows (no product shot) ---------- */
 .price-list { border-top: 1px solid var(--gold-soft); }
@@ -2248,8 +2519,202 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
 .enquiry-bar-clear:hover { color: var(--ivory); }
 
 @media (max-width: 576px) {
-  .enquiry-bar { right: 12px; left: 12px; bottom: 12px; justify-content: space-between; }
+  /* Full width on a phone. The count holds the left edge and the auto margin
+     pushes Enquire and the back-to-top together on the right, rather than
+     space-between stranding Enquire on its own in the middle. */
+  .enquiry-bar { right: 12px; left: 12px; bottom: 12px; justify-content: flex-start; }
+  .enquiry-bar .enquiry-bar-count { margin-right: auto; }
 }
+
+/* ---------- Back to top (phones only) ----------
+   The enquiry bar is pinned full-width across the bottom on a phone, so this
+   steps above it whenever that bar is showing rather than sitting under it. */
+.to-top {
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  z-index: 1400; /* below the enquiry bar at 1500 */
+  display: none; /* desktop never shows it */
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--gold-soft);
+  border-radius: 50%;
+  background-color: var(--ivory);
+  color: var(--gold-text);
+  box-shadow: 0 10px 26px rgba(28, 25, 19, 0.20);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity 0.35s ease,
+              transform 0.35s cubic-bezier(0.2, 0.65, 0.25, 1),
+              bottom 0.35s cubic-bezier(0.2, 0.65, 0.25, 1),
+              visibility 0s linear 0.35s;
+}
+
+@media (max-width: 768px) {
+  .to-top { display: flex; }
+}
+
+.to-top.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition-delay: 0s, 0s, 0s, 0s;
+}
+
+/* Inside the enquiry bar it stops being a floating pill and becomes a
+   sibling of Enquire, in the same gold-foil treatment and the same height. */
+.to-top--in-bar {
+  position: static;
+  right: auto;
+  bottom: auto;
+  z-index: auto;
+  width: auto;
+  height: auto;
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--foil);
+  background-size: 200% auto;
+  color: #241d10;
+  box-shadow: none;
+  /* Always on once it is in the bar, scrolled or not: the bar is a fixed set
+     of controls, and a slot that appears and vanishes reads as a glitch. The
+     scroll threshold still gates the floating version. */
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: var(--transition);
+}
+
+.to-top--in-bar:hover { color: #241d10; transform: translateY(-1px); }
+
+
+.to-top svg { display: block; width: 15px; height: 15px; }
+
+.to-top:active {
+  background-color: var(--champagne);
+  border-color: var(--gold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .to-top { transition: opacity 0.2s ease, visibility 0s linear 0.2s; }
+}
+
+
+/* ---------- Category index: the way into a shop page ----------
+   Replaces the old wrapped row of uppercase links, which read as a wall of
+   text on a phone. Two columns on a handset, four on a desktop. */
+.category-index { padding: clamp(38px, 5vw, 62px) 0; }
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: clamp(12px, 1.6vw, 20px);
+}
+
+@media (max-width: 640px) {
+  .category-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+}
+
+.category-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--paper);
+  border: 1px solid var(--gold-soft);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  color: inherit;
+  transition: var(--transition);
+}
+
+.category-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lift);
+  border-color: var(--gold);
+  color: inherit;
+}
+
+.category-card-media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background-color: var(--champagne);
+}
+
+.category-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1s cubic-bezier(0.2, 0.65, 0.25, 1);
+}
+
+.category-card:hover .category-card-media img { transform: scale(1.06); }
+
+.category-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 13px 14px 15px;
+  flex: 1;
+}
+
+.category-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  font-weight: 500;
+  line-height: 1.28;
+  color: var(--ink);
+  margin: 0;
+  flex: 1;
+}
+
+.category-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-family: var(--font-body);
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
+  color: var(--gold-text);
+}
+
+.category-card-meta i {
+  font-style: normal;
+  transition: transform 0.35s cubic-bezier(0.2, 0.65, 0.25, 1);
+}
+
+.category-card:hover .category-card-meta i { transform: translateX(4px); }
+
+/* Secondary jumps (packages, documents) sit under the grid as plain links */
+.category-extra {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 26px;
+  margin-top: clamp(18px, 2.4vw, 26px);
+}
+
+.category-extra a {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  padding: 6px 0;
+  border-bottom: 1px solid var(--gold-soft);
+}
+
+.category-extra a:hover { color: var(--gold-text); border-bottom-color: var(--gold); }
+
+
 
 /* ---------- Shop: category jump bar ---------- */
 .jumpbar {
