@@ -1,0 +1,17 @@
+# Windows / OneDrive
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# macOS (in case the site is ever opened on a Mac)
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# Claude Code: shared settings are tracked, local overrides are not
+.claude/settings.local.json
