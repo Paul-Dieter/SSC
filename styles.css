@@ -54,6 +54,39 @@
   --fluid-body: clamp(0.92rem, 1vw, 1rem);
 }
 
+/* ==========================================================================
+   EXPERIMENT - glossy black in place of the mirror-gold.
+   Everything above is the original gold system, untouched. Delete this block,
+   down to the END marker, to go straight back to gold.
+   ========================================================================== */
+:root {
+  --gold: #2a2724;
+  --gold-deep: #14120f;
+  --gold-soft: rgba(20, 18, 15, 0.20);
+  --gold-faint: rgba(20, 18, 15, 0.10);
+
+  /* words and ornament on light grounds */
+  --gold-text: #16130f;
+
+  /* the pale end of the gloss; flat fallback where a gradient can't apply */
+  --gold-light: #e4dfd6;
+
+  /* Polished black for LIGHT grounds: near-black stops with lifted charcoal
+     bands sweeping through them - the bands are what read as gloss. */
+  --foil-ink: linear-gradient(103deg,
+      #191612 0%, #423b32 18%, #0d0b09 38%,
+      #4d4539 55%, #14110d 78%, #2c2721 100%);
+
+  /* On the dark hero and footer a black gloss would vanish into the ground, so
+     that surface is shown by its highlight instead: the warm pearl sheen you
+     see running across polished black. */
+  --foil: linear-gradient(103deg,
+      #8c867c 0%, #d2ccbf 20%, #ffffff 40%,
+      #9c968b 55%, #eae5db 75%, #8c867c 100%);
+}
+/* Pill fills are overridden at the end of this file, where they can win on
+   source order against the original .btn-gold rule further down. */
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html { scroll-behavior: smooth; }
@@ -194,6 +227,13 @@ body::after {
      box extends the paint area without touching the line height. */
   padding-right: 0.2em;
   padding-bottom: 0.18em;
+  padding-left: 0.08em;
+  /* When the heading wraps, the inline box splits and padding lands only on the
+     first and last fragment - so the e ending one line and the p starting the
+     next fall outside the paint box and vanish. clone gives every fragment its
+     own padding. */
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 .eyebrow {
@@ -952,12 +992,11 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   overflow: hidden;
 }
 
+/* Sized to the hero exactly. It used to overscan (top: -12%; height: 124%) and
+   sit under a 1.02-1.12 zoom, which cropped the photo hard on every side. */
 .hero-bg {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: -12%;
-  height: 124%;
+  inset: 0;
   z-index: 0;
 }
 
@@ -966,7 +1005,6 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   height: 100%;
   object-fit: cover;
   object-position: center;
-  animation: heroZoom 26s ease-in-out infinite alternate;
 }
 
 /* warm, cozy candle-light grade over the photo */
@@ -1004,6 +1042,7 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   background: linear-gradient(90deg, transparent, #d9c39a, transparent);
 }
 
+/* Page heroes (floral, stationery, planning, packages) still use this pair. */
 .hero-title {
   display: flex;
   flex-direction: column;
@@ -1048,53 +1087,9 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   margin-top: 42px;
 }
 
-/* Scroll indicator: engraved hairline with travelling gold bead */
-.scroll-indicator {
-  position: absolute;
-  bottom: 26px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  z-index: 3;
-}
-
-.scroll-line {
-  position: relative;
-  width: 1px;
-  height: 52px;
-  background-color: rgba(250, 247, 241, 0.28);
-  overflow: hidden;
-}
-
-.scroll-line::after {
-  content: '';
-  position: absolute;
-  top: -40%;
-  left: 0;
-  width: 100%;
-  height: 40%;
-  background: var(--foil);
-  animation: scrollBead 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-.scroll-word {
-  font-size: 0.62rem;
-  text-transform: uppercase;
-  letter-spacing: 4px;
-  color: rgba(250, 247, 241, 0.75);
-}
-
 @keyframes heroZoom {
   from { transform: scale(1.02); }
   to   { transform: scale(1.12); }
-}
-
-@keyframes scrollBead {
-  0%   { top: -40%; }
-  100% { top: 110%; }
 }
 
 /* ---------- Page hero: shorter variant for the service pages ---------- */
@@ -1104,8 +1099,13 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   padding: 190px 0 120px;
 }
 
-.hero--page .hero-bg { top: 0; height: 100%; }
-.hero--page .hero-bg img { animation-duration: 34s; }
+/* No heroZoom here, for the same reason it came off the home hero: the keyframes
+   scale the photo 1.02-1.12, which crops it further and softens it. */
+
+/* The section heroes are portrait photos sitting in a wide band, so only a
+   horizontal slice of each shows. Where the subject is not in the middle of the
+   frame, pick the slice instead of defaulting to dead centre. */
+.hero-bg--low img { object-position: center 72%; }
 
 .hero--page .hero-line { font-size: clamp(2.6rem, 5.2vw, 4.4rem); }
 
@@ -1226,6 +1226,13 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
 }
 
 .service-card:hover .service-card-media img { transform: scale(1.06); }
+
+/* Home categories: show these three photos whole - the frame follows the image
+   rather than the image being trimmed to a fixed frame. Scoped to #categories on
+   purpose: the cards on packages.html mix a square, a tall portrait and a
+   near-square, so those still need the uniform 4:5 crop above. */
+#categories .service-card-media { aspect-ratio: auto; }
+#categories .service-card-media img { height: auto; }
 
 .service-card-media::after {
   content: '';
@@ -1367,6 +1374,18 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
 
 .split-media--tall img { aspect-ratio: 4 / 5; object-fit: cover; }
 
+/* About: the portrait is tall and the heading is wide, so this section gets a
+   roomier container and a text-biased split - enough for "All of it, in one
+   place" to hold one line at desktop widths. */
+#about .container--narrow { max-width: 1060px; }
+#about .split { grid-template-columns: 0.82fr 1.18fr; }
+
+/* Needed, and needed at the same breakpoint as .split above: the id selector
+   outranks the generic stacking rule, so without this About never stacks. */
+@media (max-width: 768px) {
+  #about .split { grid-template-columns: 1fr; }
+}
+
 .check-list { list-style: none; }
 
 .check-list li {
@@ -1409,11 +1428,6 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   white-space: nowrap;
 }
 
-.offering-group-head .rule {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, var(--gold-soft), transparent);
-}
 
 .offering-group-head .count {
   font-size: 0.68rem;
@@ -1669,6 +1683,55 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   color: var(--muted);
 }
 
+/* Standing T&C line under each set of package prices. Small, but deliberately
+   not faint: ink-soft rather than --muted, normal weight, and a hairline above
+   so it reads as a condition attached to the prices rather than a footnote. */
+.terms-note {
+  text-align: center;
+  margin-top: 2.2rem;
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  color: var(--ink-soft);
+}
+
+/* where a package note already sits above it, the two shouldn't double up */
+.package-note + .terms-note { margin-top: 1.4rem; }
+
+/* Standing pointer to the category's package PDF, at the foot of every section
+   that lists services, products or packages. Same weight and colour as the T&C
+   line so the two read as one footer block rather than two stray footnotes. */
+.pdf-note {
+  text-align: center;
+  margin-top: 2.4rem;
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+  color: var(--ink-soft);
+}
+
+.pdf-note a {
+  color: var(--gold-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+.pdf-note a:hover { color: var(--ink); }
+
+/* stacking rules, so the footer lines never double up their margins */
+.package-note + .pdf-note { margin-top: 1.2rem; }
+.pdf-note + .terms-note { margin-top: 1.2rem; }
+
+.terms-note a {
+  color: var(--gold-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+.terms-note a:hover { color: var(--ink); }
+
 
 /* ---------- Tiered packages (stationery / floral / planning) ---------- */
 .tier-grid {
@@ -1728,18 +1791,19 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   font-weight: 300;
   line-height: 1.6;
   color: var(--ink-soft);
-  border-bottom: 1px solid var(--gold-faint);
 }
 
 .tier-list li:last-child { border-bottom: 0; }
 
+/* the marker was a 6x1 dash, i.e. another little line */
 .tier-list li::before {
   content: "";
   position: absolute;
-  left: 0;
-  top: 15px;
-  width: 6px;
-  height: 1px;
+  left: 1px;
+  top: 14px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
   background-color: var(--gold);
 }
 
@@ -2069,9 +2133,22 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
 
 /* ---------- Shop: product grid ---------- */
 .product-grid {
+  --pg-gap: clamp(14px, 1.8vw, 24px);
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: clamp(14px, 1.8vw, 24px);
+  gap: var(--pg-gap);
+}
+
+/* A section with only two products. auto-fill still lays out four tracks, so the
+   pair sits hard left against two empty ones. Keep the cards the size they are
+   in every other section and centre them instead: the max-width is exactly two
+   of the four columns plus the gap between them. */
+@media (min-width: 769px) {
+  .product-grid--pair {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: calc((100% - 3 * var(--pg-gap)) / 2 + var(--pg-gap));
+    margin-inline: auto;
+  }
 }
 
 .product {
@@ -2279,15 +2356,37 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
 .product-price--solo { flex: 1; }
 
 /* ---------- Shop: service rows (no product shot) ---------- */
-.price-list { border-top: 1px solid var(--gold-soft); }
+.price-list { margin-top: 0.4rem; }
 
+/* Where a section runs cards above a price list, the list's top rule would
+   otherwise sit flush against the bottom of the cards. */
+.product-grid + .price-list { margin-top: clamp(30px, 3.4vw, 52px); }
+
+/* A section that is quoted per wedding rather than listed: short lead paragraph
+   and a single enquiry button in place of the price rows. */
+.section-lead {
+  max-width: 640px;
+  margin-top: 2.2rem;
+}
+
+.section-lead p {
+  color: var(--muted);
+  font-weight: 300;
+  line-height: 1.95;
+  margin-bottom: 1.9rem;
+}
+
+/* Rows are told apart by a faint alternating tint now, not by a rule under each
+   one. The tint is a neutral ink wash, so it works on champagne, paper and ivory. */
 .price-row {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 15px 4px;
-  border-bottom: 1px solid var(--gold-faint);
+  padding: 15px 18px;
+  border-radius: 10px;
 }
+
+.price-row:nth-child(odd) { background-color: rgba(28, 25, 19, 0.035); }
 
 .price-row .name {
   font-family: var(--font-display);
@@ -2297,12 +2396,11 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   line-height: 1.3;
 }
 
+/* Kept as the flexible gap that pushes the price right, but no longer drawn as a
+   dotted leader. */
 .price-row .spacer {
   flex: 1;
   min-width: 12px;
-  height: 1px;
-  border-bottom: 1px dotted var(--gold-soft);
-  transform: translateY(-3px);
 }
 
 .price-row .price {
@@ -2610,14 +2708,28 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
    text on a phone. Two columns on a handset, four on a desktop. */
 .category-index { padding: clamp(38px, 5vw, 62px) 0; }
 
+/* Flex rather than grid, because auto-fill kept laying out four tracks whatever
+   the card count and stranded a short last row hard left. Wrapping flex items
+   centre their final row while the cards keep their four-up width. */
 .category-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-  gap: clamp(12px, 1.6vw, 20px);
+  --cg-gap: clamp(12px, 1.6vw, 20px);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--cg-gap);
+}
+
+.category-grid > .category-card {
+  flex: 0 1 calc((100% - 3 * var(--cg-gap)) / 4);
+  min-width: 210px;
 }
 
 @media (max-width: 640px) {
-  .category-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .category-grid { --cg-gap: 12px; }
+  .category-grid > .category-card {
+    flex: 0 1 calc((100% - var(--cg-gap)) / 2);
+    min-width: 0;
+  }
 }
 
 .category-card {
@@ -2788,10 +2900,17 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
 
 .shop-head h2 { font-size: clamp(1.7rem, 3vw, 2.4rem); margin-bottom: 0; white-space: nowrap; }
 
-.shop-head .rule {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, var(--gold-soft), transparent);
+/* The connector rule that used to run from the heading to the count is gone;
+   whitespace does that job, and the count now reads as a small champagne chip. */
+.shop-head .rule,
+.offering-group-head .rule { display: none; }
+
+.shop-head .count,
+.offering-group-head .count {
+  margin-left: auto;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background-color: var(--gold-faint);
 }
 
 .shop-head .count {
@@ -2852,7 +2971,6 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
     margin-bottom: 26px;
   }
 
-  .scroll-indicator { display: none; }
 }
 
 @media (max-width: 768px) {
@@ -2864,6 +2982,7 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   .hero { padding: 110px 0 70px; }
 
   .eyebrow-rule { width: 26px; }
+
 
   .hero-buttons {
     flex-direction: column;
@@ -2896,7 +3015,7 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   }
 
   .foil-text, .foil-script, .btn-gold,
-  .hero-bg img, .scroll-line::after {
+  .hero-bg img {
     animation: none;
   }
 
@@ -2915,3 +3034,27 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   .nav-menu-list li { transition-delay: 0s !important; }
   .nav-menu-inner::before { animation: none; }
 }
+
+
+/* ==========================================================================
+   EXPERIMENT (part 2 of 2) - glossy black pill fills.
+   Must live at the end of the file: these selectors are no more specific than
+   the gold originals above, so source order is the only thing that wins.
+   Delete together with the token block near the top to restore gold.
+   ========================================================================== */
+.btn-gold,
+.navbar:not(.scrolled) .nav-cta,
+.enquiry-bar-go,
+.to-top--in-bar {
+  background: var(--foil-ink);
+  background-size: 200% auto;
+  color: var(--ivory);
+}
+
+.btn-gold:hover,
+.enquiry-bar-go:hover,
+.to-top--in-bar:hover {
+  color: var(--ivory);
+  box-shadow: 0 14px 34px rgba(20, 18, 15, 0.42);
+}
+/* ===== END glossy-black experiment ===== */
