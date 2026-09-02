@@ -1227,13 +1227,6 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
 
 .service-card:hover .service-card-media img { transform: scale(1.06); }
 
-/* Home categories: show these three photos whole - the frame follows the image
-   rather than the image being trimmed to a fixed frame. Scoped to #categories on
-   purpose: the cards on packages.html mix a square, a tall portrait and a
-   near-square, so those still need the uniform 4:5 crop above. */
-#categories .service-card-media { aspect-ratio: auto; }
-#categories .service-card-media img { height: auto; }
-
 .service-card-media::after {
   content: '';
   position: absolute;
@@ -1281,7 +1274,10 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
 
 @media (max-width: 992px) {
   .service-grid { grid-template-columns: 1fr; max-width: 460px; margin: 0 auto; }
-  .service-card-media { aspect-ratio: 3 / 2; }
+  /* No aspect-ratio override here on purpose: the photos in these cards are tall
+     portraits, so the 3:2 frame this breakpoint used to impose cut roughly half
+     the height off them once the grid went to one column. Every service card
+     keeps the 4:5 frame from desktop at every width. */
 }
 
 
@@ -2752,7 +2748,12 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
 
 .category-card-media {
   position: relative;
-  aspect-ratio: 4 / 3;
+  /* 4:5, not the 4:3 this started as. Every photo feeding these cards is either
+     square (the product shots) or portrait - down to 9:16 on place-setting.jpg -
+     so a landscape frame threw away half the height of the tall ones. 4:5 is the
+     frame the service and product cards already use, and it costs the squares
+     20% of their width instead. */
+  aspect-ratio: 4 / 5;
   overflow: hidden;
   background-color: var(--champagne);
 }
