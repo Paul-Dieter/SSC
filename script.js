@@ -523,7 +523,7 @@
         })
         .catch(function () {
           if (status) {
-            status.textContent = 'Something went wrong. Please email ssc.signaturesigns@gmail.com and we will pick it up from there.';
+            status.textContent = 'Something went wrong. Please email info@signaturesetup.co.za and we will pick it up from there.';
           }
         })
         .then(function () {
