@@ -2513,6 +2513,20 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   .price-row { flex-wrap: wrap; gap: 8px 12px; }
   .price-row .spacer { display: none; }
   .price-row .name { width: 100%; }
+
+  /* The name takes the first line, so the second line is price then button.
+     In plain flex flow the button starts wherever the price text happens to
+     end, and prices here run from "R250+" to "R500 per extra hour" - eleven
+     characters of swing, so the column of buttons zigzagged down the list.
+     Letting the price absorb the slack pins every button to the same right
+     edge instead. */
+  .price-row .price { flex: 1; }
+
+  /* 9px of padding gave a 33px target. Thumbs want 44. */
+  .price-row .product-cta {
+    min-height: 44px;
+    padding: 12px 20px;
+  }
 }
 
 /* ---------- Shop: enquiry list ---------- */
