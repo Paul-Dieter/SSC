@@ -1,8 +1,28 @@
 # https://www.signaturesetup.co.za/
+
 User-agent: *
 Allow: /
-
 # Screenshot harness, not a real page.
+Disallow: /_shot.html
+
+# AI crawlers are welcome. The wildcard group above already permits them, but
+# a crawler that matches its own name uses ONLY that group and ignores "*", so
+# the Disallow has to be repeated here or these bots would crawl _shot.html.
+# Listed explicitly so the intent survives future edits to the group above.
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-User
+User-agent: Claude-SearchBot
+User-agent: anthropic-ai
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: CCBot
+User-agent: Bingbot
+Allow: /
 Disallow: /_shot.html
 
 Sitemap: https://www.signaturesetup.co.za/sitemap.xml
