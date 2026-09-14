@@ -2788,7 +2788,7 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
 .category-card-media {
   position: relative;
   /* 4:5, not the 4:3 this started as. Every photo feeding these cards is either
-     square (the product shots) or portrait - down to 9:16 on place-setting.jpg -
+     square (the product shots) or portrait - down to 9:16 on place-setting.webp -
      so a landscape frame threw away half the height of the tall ones. 4:5 is the
      frame the service and product cards already use, and it costs the squares
      20% of their width instead. */
