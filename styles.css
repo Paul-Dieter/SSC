@@ -148,6 +148,31 @@ a {
 }
 a:hover { color: var(--gold-text); }
 
+/* Prose links inside running text must not be signalled by colour alone -
+   that fails WCAG 1.4.1 and is invisible to anyone who cannot separate the
+   gold from the ink. Nav items, cards and .link-arrow are exempt: their shape,
+   position or trailing arrow already marks them as links. */
+.pdf-note a,
+.terms-note a,
+.hero-breadcrumb a,
+.footer-bottom a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  text-decoration-color: var(--gold-soft);
+  transition: text-decoration-color var(--transition), color var(--transition);
+}
+.pdf-note a:hover,
+.terms-note a:hover,
+.hero-breadcrumb a:hover,
+.footer-bottom a:hover {
+  text-decoration-color: currentColor;
+}
+
+/* The footer sits on --ink, so its links need the light foil, not gold-text */
+.footer-bottom a { color: var(--gold-light); }
+.footer-bottom a:hover { color: var(--ivory); }
+
 button {
   cursor: pointer;
   border: none;
