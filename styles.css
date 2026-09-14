@@ -2246,6 +2246,41 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
 
 .product:hover .product-media img { transform: scale(1.06); }
 
+/* Table-layout cards. These are Canva mock-ups rendered at 1200x1307, and they
+   carry a labelled key down the right-hand edge, so the 4/5 product frame would
+   crop the labels off. Match the artwork instead and letterbox on the ink
+   ground rather than cropping. */
+.layout-media {
+  aspect-ratio: 12 / 13;
+  background-color: var(--ink);
+}
+.layout-media img { object-fit: contain; }
+.layout-media + .product-info { padding-top: 14px; }
+
+/* Sub-heading inside a section that already owns the h2 */
+.section-subhead {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+  font-weight: 500;
+  color: var(--ink);
+  margin: clamp(26px, 3vw, 38px) 0 clamp(14px, 1.6vw, 18px);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--gold-soft);
+}
+.section-subhead:first-of-type { margin-top: clamp(18px, 2vw, 24px); }
+
+/* The composition line. Not .product-price: that is uppercase gold at 0.74rem
+   with 1.2px tracking, which is right for "R550+" and unreadable for a sentence. */
+.layout-spec {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--muted);
+  margin: 0;
+  flex: 1;
+}
+
 .product-info {
   display: flex;
   flex-direction: column;
