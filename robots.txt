@@ -1,0 +1,8 @@
+# https://www.signaturesetup.co.za/
+User-agent: *
+Allow: /
+
+# Screenshot harness, not a real page.
+Disallow: /_shot.html
+
+Sitemap: https://www.signaturesetup.co.za/sitemap.xml
