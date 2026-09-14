@@ -102,6 +102,45 @@ body {
 
 img { display: block; max-width: 100%; height: auto; object-fit: cover; }
 
+/* Available to screen readers and to Google, not shown on screen. Used for
+   headings that the visual design carries by position rather than by words -
+   without them the heading order jumps h1 -> h3. */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Keyboard users land on this first and can jump the whole nav. It stays
+   off-screen until focused. */
+.skip-link {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, -120%);
+  z-index: 2000;
+  padding: 0.7rem 1.4rem;
+  background-color: var(--ink);
+  color: var(--ivory);
+  font-family: var(--font-body, inherit);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 0 0 4px 4px;
+  transition: transform 0.18s ease;
+}
+.skip-link:focus {
+  transform: translate(-50%, 0);
+  color: var(--ivory);
+  outline: 2px solid var(--gold-light);
+  outline-offset: 2px;
+}
+
 a {
   color: var(--ink);
   text-decoration: none;
