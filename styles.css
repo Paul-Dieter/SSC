@@ -327,12 +327,27 @@ body::after {
   line-height: 1.5;
 }
 
-/* Two-up on small screens: four across becomes unreadably narrow. The badge
-   keeps the full row to itself so it is not squeezed against a divider. */
+/* On a phone, four items two-up put eight lines of small caps into a tight
+   grid directly under the hero, which reads as clutter. One centred column
+   instead: the vertical rules go, because spacing separates them well enough
+   once nothing sits side by side, and the band gets shallower padding so the
+   extra height does not push the categories grid too far down. */
 @media (max-width: 576px) {
-  .trust-list { gap: 18px 22px; }
-  .trust-item { max-width: 44%; }
-  .trust-item--badge { flex: 0 0 100%; max-width: 100%; }
+  .trust-strip { padding: 26px 0; }
+
+  .trust-list {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .trust-item,
+  .trust-item--badge {
+    max-width: 290px;
+  }
+
+  .trust-item + .trust-item::before { display: none; }
+
+  .trust-item--badge img { width: 84px; }
   .trust-item--badge .trust-label { margin-top: 8px; }
 }
 
@@ -2273,15 +2288,6 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   width: 72px;
   height: auto;
   margin: 0 auto;
-}
-
-.footer-badge p {
-  margin: 10px 0 0;
-  font-size: 0.66rem;
-  font-weight: 300;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: rgba(250, 247, 241, 0.55);
 }
 
 .footer-bottom {
