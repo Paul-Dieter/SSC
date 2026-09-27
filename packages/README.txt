@@ -29,6 +29,8 @@ change means editing both. The places to look:
 Notes
 -----
 - Filenames are case-sensitive on GitHub Pages. Keep them lowercase.
-- The pricing PDFs are large (8-28 MB each) because they are image-heavy
-  exports. If page load or repo size becomes a problem, re-export them at a
-  lower image quality; nothing in the code needs to change.
+- All six PDFs were replaced with compressed versions on 27 September 2026,
+  taking the folder from 76 MB to 8.8 MB. Each is now 1-2 MB. If a document is
+  ever re-exported from Canva, use "PDF Standard" rather than "PDF Print" --
+  the print setting embeds print-resolution images and is what made the
+  originals so large. Nothing in the code needs to change either way.
