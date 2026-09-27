@@ -252,25 +252,35 @@
 <!-- TRUST STRIP -->
 <aside class="trust-strip" aria-label="Credentials">
     <div class="container">
-        <ul class="trust-list">
-            <li class="trust-item trust-item--badge">
+        <div class="trust-inner">
+
+            <div class="trust-badge">
                 <img src="media/bruidsgids-member-2026.webp" alt=""
                      width="320" height="320" decoding="async">
                 <span class="trust-label">Proud member of Bruidsgids Wedding Guide</span>
-            </li>
-            <li class="trust-item">
-                <span class="trust-figure">80+</span>
-                <span class="trust-label">weddings planned &amp; coordinated</span>
-            </li>
-            <li class="trust-item">
-                <span class="trust-figure">Qualified</span>
-                <span class="trust-label">in floral design, styling &amp; d&eacute;cor</span>
-            </li>
-            <li class="trust-item">
-                <span class="trust-figure">One vendor</span>
-                <span class="trust-label">stationery, florals &amp; planning</span>
-            </li>
-        </ul>
+            </div>
+
+            <!-- Static row on a desktop, where all three fit. Below 576px the
+                 track becomes a scroll-snap carousel; it swipes with no script
+                 at all, and the dots are added by script.js when it is live. -->
+            <div class="trust-carousel">
+                <ul class="trust-track">
+                    <li class="trust-item">
+                        <span class="trust-figure">80+</span>
+                        <span class="trust-label">weddings planned &amp; coordinated</span>
+                    </li>
+                    <li class="trust-item">
+                        <span class="trust-figure">Qualified</span>
+                        <span class="trust-label">in floral design, styling &amp; d&eacute;cor</span>
+                    </li>
+                    <li class="trust-item">
+                        <span class="trust-figure">One vendor</span>
+                        <span class="trust-label">stationery, florals &amp; planning</span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
     </div>
 </aside>
 

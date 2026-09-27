@@ -531,4 +531,85 @@
         });
     });
   }
+
+  /* ---------- Trust strip: phone carousel ----------
+     The swipe itself is CSS scroll-snap, so this adds only what CSS cannot:
+     dots saying where you are and letting you jump.
+
+     Deliberately no auto-advance. WCAG 2.2.2 wants a pause control on anything
+     that moves by itself for more than five seconds, and three short lines of
+     type are not worth either the control or the movement. The dots are the
+     affordance that the row goes sideways.
+
+     Everything here is additive: with this script blocked the strip still
+     swipes, and all three figures stay in the DOM for search engines and
+     screen readers either way. */
+  var trustTrack = document.querySelector('.trust-track');
+  var trustCarousel = document.querySelector('.trust-carousel');
+
+  if (trustTrack && trustCarousel) {
+    var PHONE = '(max-width: 576px)';
+    var slides = Array.prototype.slice.call(trustTrack.children);
+    var dotsBox = null;
+
+    /* Each slide is exactly one track width (flex: 0 0 100%), so the scroll
+       offset divides cleanly. offsetLeft is not used: it is measured against
+       the nearest positioned ancestor, which is not the track, and the drift
+       put every slide but the first off-centre. */
+    function slideWidth() { return trustTrack.clientWidth || 1; }
+
+    function currentIndex() {
+      var i = Math.round(trustTrack.scrollLeft / slideWidth());
+      return Math.max(0, Math.min(slides.length - 1, i));
+    }
+
+    function paintDots() {
+      if (!dotsBox) return;
+      var active = currentIndex();
+      Array.prototype.forEach.call(dotsBox.children, function (dot, i) {
+        if (i === active) dot.setAttribute('aria-current', 'true');
+        else dot.removeAttribute('aria-current');
+      });
+    }
+
+    function buildDots() {
+      if (dotsBox) return;
+      dotsBox = document.createElement('div');
+      dotsBox.className = 'trust-dots';
+      slides.forEach(function (slide, i) {
+        var dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'trust-dot';
+        // the figure is the useful half of the label, e.g. "80+"
+        var figure = slide.querySelector('.trust-figure');
+        dot.setAttribute('aria-label', figure ? figure.textContent.trim() : 'Credential ' + (i + 1));
+        dot.addEventListener('click', function () {
+          trustTrack.scrollTo({
+            left: i * slideWidth(),
+            behavior: reduceMotion ? 'auto' : 'smooth'
+          });
+        });
+        dotsBox.appendChild(dot);
+      });
+      trustCarousel.appendChild(dotsBox);
+      paintDots();
+    }
+
+    function removeDots() {
+      if (!dotsBox) return;
+      dotsBox.parentNode.removeChild(dotsBox);
+      dotsBox = null;
+      // a desktop row has no scroll offset to inherit
+      trustTrack.scrollLeft = 0;
+    }
+
+    function syncTrust() {
+      if (window.matchMedia(PHONE).matches) buildDots();
+      else removeDots();
+    }
+
+    trustTrack.addEventListener('scroll', paintDots, { passive: true });
+    window.addEventListener('resize', syncTrust);
+    syncTrust();
+  }
 })();

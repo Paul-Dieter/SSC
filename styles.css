@@ -259,12 +259,35 @@ body::after {
   padding: clamp(22px, 3vw, 34px) 0;
 }
 
-.trust-list {
+.trust-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(20px, 4vw, 54px);
+}
+
+.trust-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 230px;
+}
+
+.trust-badge img {
+  display: block;
+  width: clamp(76px, 9vw, 104px);
+  height: auto;
+}
+
+.trust-badge .trust-label { margin-top: 10px; }
+
+.trust-track {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   gap: clamp(20px, 4vw, 54px);
@@ -278,7 +301,8 @@ body::after {
   max-width: 200px;
 }
 
-/* Divider between the text credentials, not against the badge. */
+/* Hairline between the three figures. The badge is outside the track, so it
+   never gets one crowding it. */
 .trust-item + .trust-item {
   position: relative;
 }
@@ -291,24 +315,6 @@ body::after {
   width: 1px;
   height: 34px;
   background-color: var(--gold-soft);
-}
-
-/* The badge is a graphic, not a credential in the same row of type; a rule
-   between it and the first figure just crowds it. */
-.trust-item--badge + .trust-item::before { display: none; }
-
-.trust-item--badge {
-  max-width: 230px;
-}
-
-.trust-item--badge img {
-  display: block;
-  width: clamp(76px, 9vw, 104px);
-  height: auto;
-}
-
-.trust-item--badge .trust-label {
-  margin-top: 10px;
 }
 
 .trust-figure {
@@ -327,28 +333,84 @@ body::after {
   line-height: 1.5;
 }
 
-/* On a phone, four items two-up put eight lines of small caps into a tight
-   grid directly under the hero, which reads as clutter. One centred column
-   instead: the vertical rules go, because spacing separates them well enough
-   once nothing sits side by side, and the band gets shallower padding so the
-   extra height does not push the categories grid too far down. */
+/* The dots only exist once script.js builds them, and only on a phone. */
+.trust-dots { display: none; }
+
+/* ---------- Trust strip: phone ----------
+   Three figures side by side become three cramped columns, and stacked they
+   run the band to roughly 400px before the categories grid starts. One at a
+   time instead, swiped: scroll-snap does the whole interaction natively, so
+   it still works with script.js blocked, and all three stay in the DOM for
+   search engines and screen readers either way. */
 @media (max-width: 576px) {
   .trust-strip { padding: 26px 0; }
 
-  .trust-list {
+  .trust-inner {
     flex-direction: column;
-    gap: 20px;
+    gap: 18px;
   }
 
-  .trust-item,
-  .trust-item--badge {
-    max-width: 290px;
+  .trust-carousel { width: 100%; }
+
+  .trust-track {
+    gap: 0;
+    /* must be flex-start: centring a flex row that overflows parks the scroll
+       in the middle, so the strip opened on the second figure and the overflow
+       to its left could not be reached at all */
+    justify-content: flex-start;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    /* the tallest card sets the height, so the dots never jump between slides */
+    min-height: 74px;
+  }
+  .trust-track::-webkit-scrollbar { display: none; }
+
+  .trust-item {
+    flex: 0 0 100%;
+    max-width: 100%;
+    scroll-snap-align: center;
+    justify-content: center;
+    padding: 0 12px;
   }
 
+  /* no vertical hairlines when only one card is ever on screen */
   .trust-item + .trust-item::before { display: none; }
 
-  .trust-item--badge img { width: 84px; }
-  .trust-item--badge .trust-label { margin-top: 8px; }
+  .trust-badge img { width: 84px; }
+  .trust-badge .trust-label { margin-top: 8px; }
+
+  .trust-dots {
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    margin-top: 14px;
+  }
+
+  .trust-dot {
+    width: 6px;
+    height: 6px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background-color: var(--gold-soft);
+    cursor: pointer;
+    transition: width var(--transition), background-color var(--transition);
+  }
+
+  /* the active dot stretches to a short pill rather than just changing colour,
+     so the position is legible without relying on the gold alone */
+  .trust-dot[aria-current="true"] {
+    width: 18px;
+    background-color: var(--gold);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trust-track { scroll-behavior: auto; }
+  .trust-dot { transition: none; }
 }
 
 
