@@ -1630,6 +1630,14 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
 
 .split-media--tall img { aspect-ratio: 4 / 5; object-fit: cover; }
 
+/* A button and a text link side by side under split copy */
+.split-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px 28px;
+}
+
 /* About: the portrait is tall and the heading is wide, so this section gets a
    roomier container and a text-biased split - enough for "All of it, in one
    place" to hold one line at desktop widths. */
