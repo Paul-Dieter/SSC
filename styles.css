@@ -2325,6 +2325,135 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
 }
 
 
+/* One line under each enquiry form pointing at the privacy notice. */
+.form-privacy {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 0.74rem;
+  font-weight: 300;
+  color: var(--muted);
+}
+
+.form-privacy a {
+  color: var(--gold-text);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  text-decoration-color: var(--gold-soft);
+}
+
+.form-privacy a:hover { text-decoration-color: currentColor; }
+
+
+/* ---------- FAQ: native <details>, so it opens with no script ---------- */
+.faq-list {
+  max-width: 820px;
+  margin: 0 auto;
+  border-top: 1px solid var(--gold-soft);
+}
+
+.faq-item { border-bottom: 1px solid var(--gold-soft); }
+
+.faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 4px;
+  font-family: var(--font-display);
+  font-size: 1.28rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--ink);
+  cursor: pointer;
+  list-style: none;
+}
+
+.faq-item summary::-webkit-details-marker { display: none; }
+
+/* a plus that turns into a minus */
+.faq-item summary::after {
+  content: "";
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  background:
+    linear-gradient(var(--gold), var(--gold)) center / 12px 1px no-repeat,
+    linear-gradient(var(--gold), var(--gold)) center / 1px 12px no-repeat;
+  transition: transform 0.3s ease;
+}
+
+.faq-item[open] summary::after {
+  background: linear-gradient(var(--gold), var(--gold)) center / 12px 1px no-repeat;
+}
+
+.faq-item summary:hover { color: var(--gold-text); }
+
+.faq-item summary:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.faq-answer {
+  padding: 0 4px 24px;
+  max-width: 68ch;
+}
+
+.faq-answer p {
+  font-size: 0.9rem;
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--muted);
+}
+
+.faq-answer p + p { margin-top: 0.8rem; }
+
+
+/* ---------- Long-form text (privacy notice) ---------- */
+.prose { max-width: 720px; margin: 0 auto; }
+
+.prose h2 {
+  font-size: 1.7rem;
+  margin: 2.6rem 0 0.9rem;
+}
+
+.prose h2:first-child { margin-top: 0; }
+
+.prose p,
+.prose li {
+  font-size: 0.92rem;
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--ink-soft);
+}
+
+.prose p + p { margin-top: 0.9rem; }
+
+.prose ul { margin: 0.6rem 0 0 1.2rem; }
+
+.prose ul + p { margin-top: 0.9rem; }
+
+.prose li { padding: 0.2rem 0; }
+
+.prose strong { font-weight: 500; color: var(--ink); }
+
+.prose a {
+  color: var(--gold-text);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  text-decoration-color: var(--gold-soft);
+}
+
+.prose a:hover { text-decoration-color: currentColor; }
+
+.prose-updated {
+  margin-top: 2.6rem;
+  font-size: 0.78rem !important;
+  color: var(--muted) !important;
+}
+
 /* ---------- Footer ---------- */
 .footer {
   background-color: var(--ink);
