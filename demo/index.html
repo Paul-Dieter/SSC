@@ -83,31 +83,33 @@
 
         @media (max-width: 560px) { .demo-bar .long { display: none; } }
 
-        /* ---------- Section nav ---------- */
+        /* ---------- Section nav ----------
+           Desktop: one centred row of links. Up to 760px: the couple's
+           initials and a Menu button, which opens the links as a full-width
+           list under the bar. */
         .site-nav {
             position: sticky;
             top: var(--demo-bar);
             z-index: 40;
             margin-top: var(--demo-bar);
-            background-color: rgba(246, 243, 236, 0.9);
+            background-color: rgba(246, 243, 236, 0.92);
             -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--sage-soft);
         }
 
+        .nav-brand,
+        .nav-toggle { display: none; }
+
         .site-nav ul {
             display: flex;
             justify-content: center;
-            gap: clamp(18px, 4vw, 44px);
+            gap: clamp(18px, 3.4vw, 44px);
             list-style: none;
             padding: 0 16px;
-            overflow-x: auto;
-            scrollbar-width: none;
         }
 
-        .site-nav ul::-webkit-scrollbar { display: none; }
-
-        .site-nav a {
+        .site-nav ul a {
             display: block;
             padding: 18px 0;
             font-size: 0.72rem;
@@ -119,9 +121,99 @@
             color: var(--sage-deep);
         }
 
-        .site-nav a:hover { color: var(--ink); }
+        .site-nav ul a:hover { color: var(--ink); }
 
-        @media (max-width: 640px) { .site-nav ul { justify-content: flex-start; } }
+        @media (max-width: 760px) {
+            .nav-inner {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                height: 56px;
+                padding: 0 18px;
+            }
+
+            .nav-brand {
+                display: block;
+                font-family: var(--script);
+                font-size: 1.7rem;
+                line-height: 1;
+                color: var(--sage-deep);
+                text-decoration: none;
+            }
+
+            .nav-brand span { color: var(--sage); font-size: 0.8em; padding: 0 2px; }
+
+            .nav-toggle {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                padding: 8px 2px;
+                background: none;
+                border: 0;
+                font-family: var(--sans);
+                font-size: 0.7rem;
+                font-weight: 500;
+                letter-spacing: 2.2px;
+                text-transform: uppercase;
+                color: var(--sage-deep);
+                cursor: pointer;
+            }
+
+            /* two lines that cross into an X when open */
+            .nav-toggle .bars {
+                position: relative;
+                width: 20px;
+                height: 10px;
+            }
+
+            .nav-toggle .bars::before,
+            .nav-toggle .bars::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                right: 0;
+                height: 1.5px;
+                background-color: currentColor;
+                transition: transform 0.3s ease, top 0.3s ease;
+            }
+
+            .nav-toggle .bars::before { top: 0; }
+            .nav-toggle .bars::after { top: 8.5px; }
+
+            .nav-toggle[aria-expanded="true"] .bars::before { top: 4.25px; transform: rotate(45deg); }
+            .nav-toggle[aria-expanded="true"] .bars::after { top: 4.25px; transform: rotate(-45deg); }
+
+            .site-nav ul {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                display: block;
+                padding: 6px 0 14px;
+                background-color: var(--cream);
+                border-bottom: 1px solid var(--sage-soft);
+                box-shadow: 0 18px 30px -18px rgba(38, 42, 33, 0.35);
+                opacity: 0;
+                visibility: hidden;
+                transform: translateY(-6px);
+                transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s;
+            }
+
+            .site-nav.open ul {
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                transition-delay: 0s;
+            }
+
+            .site-nav ul a {
+                padding: 14px 18px;
+                font-size: 0.8rem;
+                border-bottom: 1px solid var(--sage-soft);
+            }
+
+            .site-nav li:last-child a { border-bottom: 0; }
+        }
 
         /* ---------- Hero ----------
            Editorial layout: an arched portrait in the middle with a fine
@@ -328,6 +420,7 @@
 
         .btn:focus-visible,
         .site-nav a:focus-visible,
+        .nav-toggle:focus-visible,
         summary:focus-visible { outline: 2px solid var(--sage); outline-offset: 3px; }
 
         /* ---------- Sections ---------- */
@@ -675,19 +768,25 @@
 </div>
 
 <nav class="site-nav" aria-label="Sections">
-    <ul>
-        <li><a href="#story">Our Story</a></li>
-        <li><a href="#day">The Day</a></li>
-        <li><a href="#details">Details</a></li>
-        <li><a href="#stay">Stay</a></li>
-        <li><a href="#faq">Questions</a></li>
-        <li><a href="#rsvp">RSVP</a></li>
-    </ul>
+    <div class="nav-inner">
+        <a href="#top" class="nav-brand" aria-label="Amara and Theo, back to top">A<span>&amp;</span>T</a>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="navList">
+            <span class="bars" aria-hidden="true"></span>Menu
+        </button>
+        <ul id="navList">
+            <li><a href="#story">Our Story</a></li>
+            <li><a href="#day">The Day</a></li>
+            <li><a href="#details">Details</a></li>
+            <li><a href="#stay">Stay</a></li>
+            <li><a href="#faq">Questions</a></li>
+            <li><a href="#rsvp">RSVP</a></li>
+        </ul>
+    </div>
 </nav>
 
 <main>
 
-<header class="hero">
+<header class="hero" id="top">
     <p class="kicker">
         <svg viewBox="0 0 46 14" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M0 7h30"/><path d="M30 7c4-4 9-5 14-5-2 4-7 6-14 5zM30 7c4 4 9 5 14 5-2-4-7-6-14-5z"/></svg>
         We&rsquo;re getting married
@@ -941,6 +1040,29 @@
 <script>
 (function () {
   var WEDDING = new Date('2027-04-17T15:30:00+02:00');
+
+  /* Phone menu: opens under the bar, closes on a link, Escape or a tap outside */
+  var nav = document.querySelector('.site-nav');
+  var navToggle = nav.querySelector('.nav-toggle');
+  function setMenu(open) {
+    nav.classList.toggle('open', open);
+    navToggle.setAttribute('aria-expanded', String(open));
+  }
+  navToggle.addEventListener('click', function () {
+    setMenu(!nav.classList.contains('open'));
+  });
+  Array.prototype.forEach.call(nav.querySelectorAll('a'), function (link) {
+    link.addEventListener('click', function () { setMenu(false); });
+  });
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && nav.classList.contains('open')) {
+      setMenu(false);
+      navToggle.focus();
+    }
+  });
+  document.addEventListener('click', function (event) {
+    if (nav.classList.contains('open') && !nav.contains(event.target)) setMenu(false);
+  });
 
   /* Countdown */
   var cells = {};
