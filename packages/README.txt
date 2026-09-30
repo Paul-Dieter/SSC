@@ -25,6 +25,10 @@ change means editing both. The places to look:
   floral.html      the ceremony and reception tier-cards, the add-ons
                    price-list, and the <p class="product-price"> on each card
   planning.html    the three planning tier-cards and the add-ons price-list
+  websites.html    the three website tier-cards (the R2 000 and R3 500 prices
+                   also appear on stationery.html as the Wedding Website card)
+  packages.html    "Every Package at a Glance" repeats the headline price of
+                   every package above, in one table per service
 
 Notes
 -----
