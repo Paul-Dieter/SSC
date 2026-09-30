@@ -233,6 +233,8 @@
             object-position: center 70%;
         }
 
+        @media (min-width: 761px) { .hero-bg { object-position: center; } }
+
         .hero::after {
             content: "";
             position: absolute;
@@ -866,7 +868,12 @@
 <main>
 
 <header class="hero" id="top">
-    <img class="hero-bg" src="img/jacaranda-sky.webp" alt="" width="1100" height="1650" fetchpriority="high">
+    <!-- Landscape crops for wider screens; the portrait original would be
+         upscaled and blurred there. Phones keep the portrait. -->
+    <picture>
+        <source media="(min-width: 761px)" srcset="img/jacaranda-sky-1600.webp 1600w, img/jacaranda-sky-2400.webp 2400w" sizes="100vw">
+        <img class="hero-bg" src="img/jacaranda-sky.webp" alt="" width="1200" height="1800" fetchpriority="high">
+    </picture>
     <div class="petals" aria-hidden="true">
         <span style="left:6%;animation-duration:13s;animation-delay:-2s"></span>
         <span style="left:15%;animation-duration:17s;animation-delay:-9s;transform:scale(.8)"></span>
