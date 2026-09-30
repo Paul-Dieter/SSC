@@ -735,6 +735,24 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   color: var(--ink);
 }
 
+/* Four full service names ("Premium Stationery & Signage" and so on) are
+   wider than the page container, so the bar gets a wider container of its
+   own and steps down in two stages before the hamburger takes over at
+   1240px. Measured, not guessed: the full labels need ~1640px of viewport.
+   The dropdown label and the mobile pane always carry the full name. */
+.navbar .nav-inner { max-width: 1520px; }
+.navbar .nav-links { gap: 26px; }
+
+@media (min-width: 1241px) and (max-width: 1639px) {
+  .navbar .nav-parent-row .nav-adj { display: none; }
+}
+
+@media (min-width: 1241px) and (max-width: 1439px) {
+  .navbar .nav-links { gap: 18px; }
+  .navbar .nav-parent-row > a,
+  .navbar .nav-links a.nav-cta { letter-spacing: 1.2px; }
+}
+
 /* The logo carries "home" on desktop; the pane restates it on mobile */
 .navbar .nav-home { display: none; }
 
@@ -994,7 +1012,7 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
    Every row shares a 20px left edge and a >=44px tap height. The chevron is a
    quiet round button rather than a boxed table cell, and the submenu indents
    under its parent instead of restating the category name. */
-@media (max-width: 1180px) {
+@media (max-width: 1240px) {
   .navbar .hamburger { display: flex; }
 
   .navbar .logo-img { height: 64px; }
@@ -1338,6 +1356,11 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
    frame, pick the slice instead of defaulting to dead centre. */
 .hero-bg--low img { object-position: center 72%; }
 
+/* For a hero photo with legible text in it (the website mockup): soften it
+   so its lettering doesn't fight the page title. scale hides the blur's
+   transparent fringe at the edges. */
+.hero-bg--soft img { filter: blur(7px); transform: scale(1.06); }
+
 .hero--page .hero-line { font-size: clamp(2.6rem, 5.2vw, 4.4rem); }
 
 .hero-breadcrumb {
@@ -1417,10 +1440,10 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
 }
 
 
-/* ---------- Service cards (landing): the three core offerings ---------- */
+/* ---------- Service cards (landing): the four core offerings ---------- */
 .service-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: clamp(20px, 2.5vw, 32px);
 }
 
@@ -1503,7 +1526,13 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   margin-bottom: 1.4rem;
 }
 
-@media (max-width: 992px) {
+/* Four across is too narrow for the body copy below a desktop, so it steps
+   down to a 2 x 2 before going to a single column on phones. */
+@media (max-width: 1100px) {
+  .service-grid { grid-template-columns: repeat(2, 1fr); max-width: 820px; margin: 0 auto; }
+}
+
+@media (max-width: 640px) {
   .service-grid { grid-template-columns: 1fr; max-width: 460px; margin: 0 auto; }
   /* No aspect-ratio override here on purpose: the photos in these cards are tall
      portraits, so the 3:2 frame this breakpoint used to impose cut roughly half
@@ -3239,7 +3268,7 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   padding: 170px 0 90px;
 }
 
-@media (max-width: 1180px) { .hero--compact { padding: 140px 0 70px; } }
+@media (max-width: 1240px) { .hero--compact { padding: 140px 0 70px; } }
 
 /* ---------- Reveal animations ---------- */
 .fade-in-load {
