@@ -2245,6 +2245,24 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
 
 .form-group textarea { resize: vertical; min-height: 130px; }
 
+/* The browser's own arrow ignores the palette; a gold chevron replaces it. */
+.form-group select {
+  -webkit-appearance: none;
+  appearance: none;
+  padding-right: 42px;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none' stroke='%23b08d57' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='1 1 5 5 9 1'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+}
+
+/* Until a range is picked the select reads as a placeholder. */
+.form-group select.is-empty { color: var(--muted); }
+.form-group select option { color: var(--ink); }
+
+.form-group input::placeholder,
+.form-group textarea::placeholder { color: var(--muted); opacity: 0.75; }
+
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
@@ -3068,6 +3086,73 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   .enquiry-bar { right: 12px; left: 12px; bottom: 12px; justify-content: flex-start; }
   .enquiry-bar .enquiry-bar-count { margin-right: auto; }
 }
+
+/* ---------- WhatsApp button (injected by script.js) ----------
+   Bottom-left, because the enquiry bar and back-to-top own the right. Ink,
+   not WhatsApp green, to sit with the palette; the glyph says WhatsApp.
+   z-index stays under the navbar (1000) so the open mobile menu covers it. */
+.wa-fab {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 900;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px 12px 16px;
+  border-radius: 999px;
+  background-color: var(--ink);
+  color: var(--ivory);
+  font-family: var(--font-body);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  box-shadow: 0 14px 34px rgba(28, 25, 19, 0.28);
+  transition: transform 0.35s cubic-bezier(0.2, 0.65, 0.25, 1),
+              bottom 0.35s cubic-bezier(0.2, 0.65, 0.25, 1),
+              background-color 0.3s ease;
+}
+
+.wa-fab:hover {
+  color: var(--ivory);
+  background-color: #2e2920;
+  transform: translateY(-2px);
+}
+
+.wa-fab:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.wa-fab svg { flex-shrink: 0; }
+
+/* Phones: an icon-only 48px circle, opposite back-to-top,
+   lifted over the full-width enquiry bar while that is showing. */
+@media (max-width: 768px) {
+  .wa-fab {
+    left: 14px;
+    bottom: 14px;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    justify-content: center;
+  }
+  .wa-fab-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 576px) {
+  .enquiry-bar.visible ~ .wa-fab { bottom: 84px; }
+}
+
+@media print { .wa-fab { display: none; } }
 
 /* ---------- Back to top (phones only) ----------
    The enquiry bar is pinned full-width across the bottom on a phone, so this
