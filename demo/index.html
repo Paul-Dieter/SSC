@@ -507,6 +507,8 @@
         }
 
         .band img { width: 100%; height: 100%; object-fit: cover; object-position: center 40%; }
+        .band picture { display: contents; }
+        @media (min-width: 761px) { .band img { object-position: center; } }
 
         .band::after {
             content: "";
@@ -977,7 +979,10 @@
 
 <!-- JACARANDA BAND -->
 <section class="band" aria-label="Jacaranda season in Pretoria">
-    <img src="img/jacaranda-street.webp" alt="A Pretoria street lined with jacaranda trees in full purple bloom" width="1600" height="1067" loading="lazy" decoding="async">
+    <picture>
+        <source media="(min-width: 761px)" srcset="img/jacaranda-street-1600.webp 1600w, img/jacaranda-street-2400.webp 2400w" sizes="100vw">
+        <img src="img/jacaranda-street.webp" alt="A Pretoria street lined with jacaranda trees in full purple bloom" width="1200" height="800" loading="lazy" decoding="async">
+    </picture>
     <div class="band-caption">
         <p>Pretoria, every November</p>
         <p class="hand">and this year, our wedding</p>
