@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Naledi &amp; Sipho &middot; 17 April 2027 &middot; Sample wedding website</title>
+    <title>Amara &amp; Theo &middot; 17 April 2027 &middot; Sample wedding website</title>
     <!-- A sample site: the couple, venue and guesthouses are fictional, so it
          must never be indexed or listed in sitemap.xml. -->
     <meta name="robots" content="noindex">
@@ -123,97 +123,150 @@
 
         @media (max-width: 640px) { .site-nav ul { justify-content: flex-start; } }
 
-        /* ---------- Hero ---------- */
+        /* ---------- Hero ----------
+           Editorial layout: an arched portrait in the middle with a fine
+           offset frame, the two names set either side, the ampersand tucked
+           into the foot of the arch. Phones: arch on top, names beneath. */
         .hero {
             position: relative;
-            min-height: calc(100svh - var(--demo-bar) - 56px);
-            display: grid;
-            place-items: center;
-            text-align: center;
-            color: #fff;
             overflow: hidden;
-            isolation: isolate;
+            padding: clamp(40px, 6vw, 72px) 20px clamp(64px, 8vw, 96px);
+            text-align: center;
+            background:
+                radial-gradient(60% 55% at 50% 38%, rgba(232, 217, 204, 0.55), transparent 70%),
+                var(--paper);
         }
-
-        .hero img {
-            position: absolute;
-            inset: 0;
-            z-index: -2;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center 30%;
-        }
-
-        .hero::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            z-index: -1;
-            background: linear-gradient(180deg, rgba(30, 34, 24, 0.35) 0%, rgba(30, 34, 24, 0.25) 40%, rgba(30, 34, 24, 0.7) 100%);
-        }
-
-        .hero-inner { padding: 80px 20px; }
 
         .kicker {
-            font-size: 0.74rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            font-size: 0.72rem;
             font-weight: 400;
             letter-spacing: 4px;
             text-transform: uppercase;
+            color: var(--sage-deep);
         }
 
-        .hero h1 {
-            margin: 18px 0 6px;
+        .kicker svg { width: 46px; height: 14px; color: var(--sage); flex-shrink: 0; }
+        .kicker svg.flip { transform: scaleX(-1); }
+
+        .hero-stage {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            grid-template-areas: "n1 photo n2";
+            align-items: center;
+            column-gap: clamp(28px, 4vw, 64px);
+            max-width: 1180px;
+            margin: clamp(28px, 4vw, 44px) auto 0;
+        }
+
+        /* The spans are grid items; the h1 still carries the full names. */
+        .hero-names { display: contents; }
+
+        .hero-names .n1,
+        .hero-names .n2 {
             font-family: var(--serif);
             font-weight: 400;
-            font-size: clamp(3rem, 10vw, 6.4rem);
-            line-height: 1.05;
+            font-size: clamp(3rem, 7vw, 6.2rem);
+            line-height: 1;
+            letter-spacing: -0.5px;
+            color: var(--ink);
         }
 
-        .hero h1 .amp {
-            display: block;
-            font-family: var(--script);
-            font-size: 0.62em;
-            line-height: 1.2;
-            color: var(--blush);
+        .hero-names .n1 { grid-area: n1; justify-self: end; }
+        .hero-names .n2 { grid-area: n2; justify-self: start; font-style: italic; }
+
+        .hero-arch {
+            grid-area: photo;
+            position: relative;
+            width: clamp(260px, 30vw, 400px);
         }
+
+        /* the offset frame */
+        .hero-arch::before {
+            content: "";
+            position: absolute;
+            inset: -14px;
+            border: 1px solid var(--sage);
+            border-radius: 999px 999px 22px 22px;
+            opacity: 0.55;
+            pointer-events: none;
+        }
+
+        .hero-arch img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 3 / 4;
+            object-fit: cover;
+            object-position: 64% 22%;
+            border-radius: 999px 999px 14px 14px;
+            box-shadow: 0 30px 60px -28px rgba(38, 42, 33, 0.45);
+        }
+
+        .hero-names .amp {
+            grid-area: photo;
+            align-self: end;
+            justify-self: center;
+            position: relative;
+            z-index: 2;
+            display: grid;
+            place-items: center;
+            width: 86px;
+            height: 86px;
+            margin-bottom: -43px;
+            border-radius: 50%;
+            background-color: var(--paper);
+            box-shadow: 0 0 0 1px var(--sage-soft);
+            font-family: var(--script);
+            font-size: 2.6rem;
+            line-height: 1;
+            color: var(--sage);
+        }
+
+        .hero-meta { margin-top: clamp(64px, 7vw, 84px); }
 
         .hero-date {
             font-family: var(--serif);
             font-style: italic;
-            font-size: clamp(1.15rem, 2.6vw, 1.5rem);
+            font-size: clamp(1.25rem, 2.4vw, 1.6rem);
+            color: var(--ink);
         }
 
         .hero-place {
-            margin-top: 6px;
-            font-size: 0.8rem;
-            letter-spacing: 2.4px;
+            margin-top: 8px;
+            font-size: 0.74rem;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            opacity: 0.9;
+            color: var(--muted);
         }
 
         .countdown {
-            display: flex;
+            display: inline-flex;
             justify-content: center;
-            gap: clamp(14px, 4vw, 34px);
-            margin-top: 38px;
+            margin-top: 30px;
             list-style: none;
+            border-top: 1px solid var(--sage-soft);
+            border-bottom: 1px solid var(--sage-soft);
         }
 
-        .countdown li { min-width: 64px; }
+        .countdown li { min-width: 92px; padding: 14px 10px; }
+        .countdown li + li { border-left: 1px solid var(--sage-soft); }
 
         .countdown .num {
             display: block;
             font-family: var(--serif);
-            font-size: clamp(1.8rem, 5vw, 2.6rem);
-            line-height: 1;
+            font-size: clamp(1.7rem, 3.6vw, 2.3rem);
+            line-height: 1.1;
+            color: var(--sage-deep);
         }
 
         .countdown .unit {
-            font-size: 0.64rem;
+            font-size: 0.6rem;
             letter-spacing: 2.4px;
             text-transform: uppercase;
-            opacity: 0.85;
+            color: var(--muted);
         }
 
         .hero-actions {
@@ -221,27 +274,34 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 12px;
-            margin-top: 38px;
+            margin-top: 32px;
         }
 
-        /* Wide screens: a portrait photo cropped to landscape loses the faces,
-           so the hero splits - names on cream at left, the photo whole at right. */
-        @media (min-width: 900px) {
-            .hero {
-                justify-items: start;
-                color: var(--ink);
-                background-color: var(--paper);
+        /* Gentle entrance, skipped for anyone who asks for less motion */
+        @media (prefers-reduced-motion: no-preference) {
+            .hero-arch, .hero-names .n1, .hero-names .n2, .hero-meta {
+                animation: rise 1s cubic-bezier(0.2, 0.65, 0.25, 1) both;
             }
-            .hero img { left: 50%; width: 50%; object-position: center 22%; }
-            .hero::after { display: none; }
-            .hero-inner { width: 50%; }
-            .hero h1 .amp { color: var(--sage); }
-            .hero-place, .countdown .unit { color: var(--muted); opacity: 1; }
-            .countdown .num { color: var(--sage-deep); }
-            .hero .btn-light { background-color: var(--sage-deep); color: #fff; }
-            .hero .btn-light:hover { background-color: var(--ink); }
-            .hero .btn-outline { border-color: var(--sage); color: var(--sage-deep); }
-            .hero .btn-outline:hover { background-color: var(--sage-soft); }
+            .hero-names .n1 { animation-delay: 0.15s; }
+            .hero-names .n2 { animation-delay: 0.25s; }
+            .hero-meta { animation-delay: 0.4s; }
+            @keyframes rise { from { opacity: 0; transform: translateY(18px); } }
+        }
+
+        @media (max-width: 760px) {
+            .hero-stage {
+                grid-template-areas:
+                    "photo photo photo"
+                    "n1 . n2";
+                column-gap: 0;
+            }
+            .hero-arch { justify-self: center; width: min(78vw, 320px); }
+            .hero-names .n1, .hero-names .n2 { font-size: clamp(2.6rem, 12vw, 3.4rem); margin-top: 58px; }
+            .hero-names .n1 { padding-right: 12px; }
+            .hero-names .n2 { padding-left: 12px; }
+            .hero-names .amp { grid-row: 1; width: 72px; height: 72px; margin-bottom: -36px; font-size: 2.2rem; }
+            .hero-meta { margin-top: 30px; }
+            .countdown li { min-width: 78px; }
         }
 
         /* ---------- Buttons ---------- */
@@ -263,11 +323,8 @@
         .btn-solid { background-color: var(--sage-deep); color: #fff; }
         .btn-solid:hover { background-color: var(--ink); }
 
-        .btn-light { background-color: rgba(255, 255, 255, 0.92); color: var(--sage-deep); }
-        .btn-light:hover { background-color: #fff; }
-
-        .btn-outline { border-color: rgba(255, 255, 255, 0.7); color: #fff; background: none; }
-        .btn-outline:hover { background-color: rgba(255, 255, 255, 0.12); }
+        .btn-line { border-color: var(--sage); color: var(--sage-deep); background: none; }
+        .btn-line:hover { background-color: var(--sage-soft); }
 
         .btn:focus-visible,
         .site-nav a:focus-visible,
@@ -630,10 +687,18 @@
 <main>
 
 <header class="hero">
-    <img src="img/couple.webp" alt="" width="1400" height="1762" fetchpriority="high">
-    <div class="hero-inner">
-        <p class="kicker">We&rsquo;re getting married</p>
-        <h1>Naledi <span class="amp">&amp;</span> Sipho</h1>
+    <p class="kicker">
+        <svg viewBox="0 0 46 14" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M0 7h30"/><path d="M30 7c4-4 9-5 14-5-2 4-7 6-14 5zM30 7c4 4 9 5 14 5-2-4-7-6-14-5z"/></svg>
+        We&rsquo;re getting married
+        <svg class="flip" viewBox="0 0 46 14" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M0 7h30"/><path d="M30 7c4-4 9-5 14-5-2 4-7 6-14 5zM30 7c4 4 9 5 14 5-2-4-7-6-14-5z"/></svg>
+    </p>
+    <div class="hero-stage">
+        <figure class="hero-arch">
+            <img src="img/couple.webp" alt="Amara and Theo in a garden, holding hands" width="1400" height="1762" fetchpriority="high">
+        </figure>
+        <h1 class="hero-names"><span class="n1">Amara</span><span class="amp">&amp;</span><span class="n2">Theo</span></h1>
+    </div>
+    <div class="hero-meta">
         <p class="hero-date">Saturday, 17 April 2027</p>
         <p class="hero-place">Marula Hollow &middot; Pretoria East</p>
         <ul class="countdown" id="countdown" aria-label="Time until the wedding">
@@ -642,8 +707,8 @@
             <li><span class="num" data-unit="minutes">&ndash;</span><span class="unit">Minutes</span></li>
         </ul>
         <div class="hero-actions">
-            <a href="#rsvp" class="btn btn-light">RSVP by 1 March</a>
-            <button type="button" class="btn btn-outline" id="addToCalendar">Save the date</button>
+            <a href="#rsvp" class="btn btn-solid">RSVP by 1 March</a>
+            <button type="button" class="btn btn-line" id="addToCalendar">Save the date</button>
         </div>
     </div>
 </header>
@@ -661,8 +726,8 @@
                 <p>We met in a queue for the same sold-out lecture at university, both convinced we were first.
                 Neither of us got in, so we got coffee instead, and we have been arguing happily about who was
                 really first ever since.</p>
-                <p>Eight years, one very small flat and a rescue dog called Biscuit later, Sipho asked the
-                question on the koppie where we had our first picnic. Naledi said yes before he finished.</p>
+                <p>Eight years, one very small flat and a rescue dog called Biscuit later, Theo asked the
+                question on the koppie where we had our first picnic. Amara said yes before he finished.</p>
             </div>
             <ul class="milestones">
                 <li><span class="yr">2019</span>The lecture we never got into</li>
@@ -857,7 +922,7 @@
 </main>
 
 <footer>
-    <p class="names">Naledi &amp; Sipho</p>
+    <p class="names">Amara &amp; Theo</p>
     <p class="date">17 &middot; 04 &middot; 2027</p>
     <p class="made">A sample site by <a href="../websites.html">Signature Setup &amp; Co</a>, designed to match the couple&rsquo;s stationery.</p>
     <p class="credits">Photos: Samwel Francis, Erika Fletcher and Jocelyn Allen on Unsplash.</p>
@@ -887,11 +952,11 @@
     var ics = [
       'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Signature Setup & Co//Sample//EN',
       'BEGIN:VEVENT',
-      'UID:naledi-sipho-20270417@signaturesetup.co.za',
+      'UID:amara-theo-20270417@signaturesetup.co.za',
       'DTSTAMP:20260930T000000Z',
       'DTSTART:20270417T133000Z',
       'DTEND:20270417T213000Z',
-      'SUMMARY:Naledi & Sipho\'s wedding',
+      'SUMMARY:Amara & Theo\'s wedding',
       'LOCATION:Marula Hollow\\, Pretoria East',
       'DESCRIPTION:Ceremony at 15:30. Please be seated by 15:20.',
       'END:VEVENT', 'END:VCALENDAR'
@@ -899,7 +964,7 @@
     var url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
     var a = document.createElement('a');
     a.href = url;
-    a.download = 'naledi-and-sipho.ics';
+    a.download = 'amara-and-theo.ics';
     document.body.appendChild(a);
     a.click();
     a.remove();
