@@ -613,6 +613,73 @@
     syncTrust();
   }
 
+  /* ---------- Reviews: arrows and dots ----------
+     The track already swipes with scroll-snap; this adds the controls a mouse
+     needs. No autoplay, for the same reason as the trust strip. The arrows wrap
+     round from the last quote to the first. */
+  var reviewTrack = document.querySelector('.review-track');
+
+  if (reviewTrack) {
+    var reviewSlides = Array.prototype.slice.call(reviewTrack.children);
+    var reviewDots = [];
+
+    function reviewIndex() {
+      var i = Math.round(reviewTrack.scrollLeft / (reviewTrack.clientWidth || 1));
+      return Math.max(0, Math.min(reviewSlides.length - 1, i));
+    }
+
+    function showReview(i) {
+      var n = reviewSlides.length;
+      reviewTrack.scrollTo({
+        left: ((i % n) + n) % n * reviewTrack.clientWidth,
+        behavior: reduceMotion ? 'auto' : 'smooth'
+      });
+    }
+
+    function paintReviewDots() {
+      var active = reviewIndex();
+      reviewDots.forEach(function (dot, i) {
+        if (i === active) dot.setAttribute('aria-current', 'true');
+        else dot.removeAttribute('aria-current');
+      });
+    }
+
+    function reviewArrow(label, glyph, step) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'review-arrow';
+      b.setAttribute('aria-label', label);
+      b.innerHTML = '<span aria-hidden="true">' + glyph + '</span>';
+      b.addEventListener('click', function () { showReview(reviewIndex() + step); });
+      return b;
+    }
+
+    var reviewNav = document.createElement('div');
+    reviewNav.className = 'review-nav';
+    var dotsWrap = document.createElement('div');
+    dotsWrap.className = 'review-dots';
+
+    reviewSlides.forEach(function (slide, i) {
+      var dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'review-dot';
+      var by = slide.querySelector('.review-by');
+      var name = by ? by.firstChild.textContent.trim() : 'Review ' + (i + 1);
+      dot.setAttribute('aria-label', 'Review from ' + name);
+      dot.addEventListener('click', function () { showReview(i); });
+      dotsWrap.appendChild(dot);
+      reviewDots.push(dot);
+    });
+
+    reviewNav.appendChild(reviewArrow('Previous review', '&larr;', -1));
+    reviewNav.appendChild(dotsWrap);
+    reviewNav.appendChild(reviewArrow('Next review', '&rarr;', 1));
+    reviewTrack.parentNode.appendChild(reviewNav);
+
+    reviewTrack.addEventListener('scroll', paintReviewDots, { passive: true });
+    paintReviewDots();
+  }
+
   /* ---------- Placeholder colour for selects ----------
      A <select> has no :placeholder-shown, so an empty one is marked by class.
      Re-synced after the form's reset() on a successful send. */
