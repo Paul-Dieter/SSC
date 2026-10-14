@@ -342,17 +342,18 @@
     <div class="container">
         <div class="trust-inner">
 
-            <div class="trust-badge">
-                <img src="media/bruidsgids-member-2026.webp" alt=""
-                     width="320" height="320" decoding="async">
-                <span class="trust-label">Proud member of Bruidsgids Wedding Guide</span>
-            </div>
-
-            <!-- Static row on a desktop, where all three fit. Below 576px the
+            <!-- Static row on a desktop, where everything fits. Below 576px the
                  track becomes a scroll-snap carousel; it swipes with no script
-                 at all, and the dots are added by script.js when it is live. -->
+                 at all, and the dots are added by script.js when it is live.
+                 The badge is the first slide rather than sitting above the
+                 track: stacked on its own it looked swipeable and wasn't. -->
             <div class="trust-carousel">
                 <ul class="trust-track">
+                    <li class="trust-item trust-badge">
+                        <img src="media/bruidsgids-member-2026.webp" alt=""
+                             width="320" height="320" decoding="async">
+                        <span class="trust-label">Proud member of Bruidsgids Wedding Guide</span>
+                    </li>
                     <li class="trust-item">
                         <span class="trust-figure">Hundreds</span>
                         <span class="trust-label">of weddings we&rsquo;ve been part of</span>

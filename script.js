@@ -581,7 +581,8 @@
         dot.type = 'button';
         dot.className = 'trust-dot';
         // the figure is the useful half of the label, e.g. "80+"
-        var figure = slide.querySelector('.trust-figure');
+        // the badge slide has no figure, so fall back to its label
+        var figure = slide.querySelector('.trust-figure') || slide.querySelector('.trust-label');
         dot.setAttribute('aria-label', figure ? figure.textContent.trim() : 'Credential ' + (i + 1));
         dot.addEventListener('click', function () {
           trustTrack.scrollTo({

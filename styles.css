@@ -301,11 +301,16 @@ body::after {
   max-width: 200px;
 }
 
-/* Hairline between the three figures. The badge is outside the track, so it
-   never gets one crowding it. */
+/* The badge is the first slide in the track (so it swipes with the rest on a
+   phone) but keeps its own wider column on a desktop. */
+.trust-item.trust-badge { max-width: 230px; }
+
+/* Hairline between the three figures, never between the badge and the first
+   figure, where it would crowd the badge. */
 .trust-item + .trust-item {
   position: relative;
 }
+.trust-badge + .trust-item::before { display: none; }
 .trust-item + .trust-item::before {
   content: "";
   position: absolute;
@@ -379,8 +384,12 @@ body::after {
   /* no vertical hairlines when only one card is ever on screen */
   .trust-item + .trust-item::before { display: none; }
 
+  /* every slide must be exactly one track wide, or script.js pages wrongly */
+  .trust-item.trust-badge { max-width: 100%; }
+
   .trust-badge img { width: 84px; }
-  .trust-badge .trust-label { margin-top: 8px; }
+  /* the slide is full width, so narrow the label or "Guide" wraps alone */
+  .trust-badge .trust-label { margin-top: 8px; max-width: 230px; }
 
   .trust-dots {
     display: flex;
