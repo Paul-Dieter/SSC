@@ -2186,10 +2186,6 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   color: var(--muted);
 }
 
-.review-more {
-  margin: clamp(26px, 3vw, 38px) 0 0;
-  text-align: center;
-}
 
 /* Six stacked quotes is a long scroll on a phone. Swipe instead, with the
    next card peeking in so it is obvious there is more. No script needed. */
