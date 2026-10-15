@@ -2806,6 +2806,12 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
 }
 .section-subhead:first-of-type { margin-top: clamp(18px, 2vw, 24px); }
 
+/* The planning pricing FAQ follows the T&C line; :first-of-type above
+   leaves it cramped against that footnote on phones. */
+@media (max-width: 768px) {
+  .terms-note + .section-subhead { margin-top: 44px; }
+}
+
 /* The composition line. Not .product-price: that is uppercase gold at 0.74rem
    with 1.2px tracking, which is right for "R550+" and unreadable for a sentence. */
 .layout-spec {
