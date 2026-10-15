@@ -28,7 +28,7 @@
      The panel's top padding bridges the gap to the nav item, and a short close
      delay covers any diagonal cursor travel, so the menu never snaps shut
      while you are reaching for it. */
-  var DESKTOP = '(min-width: 1181px)';
+  var DESKTOP = '(min-width: 1341px)';
   var CLOSE_DELAY = 220;
   var menuItems = Array.prototype.slice.call(document.querySelectorAll('.nav-item.has-menu'));
 
@@ -172,7 +172,7 @@
 
   /* ---------- Mark the current page in the nav ---------- */
   var here = window.location.pathname.split('/').pop() || 'index.html';
-  var currentSelector = '.nav-home, .nav-parent-row a, .footer-nav a';
+  var currentSelector = '.nav-home, .nav-parent-row a, .nav-packages, .footer-nav a';
   document.querySelectorAll(currentSelector).forEach(function (link) {
     var target = (link.getAttribute('href') || '').split('#')[0].split('/').pop();
     if (target && target === here && !link.classList.contains('nav-cta')) {
