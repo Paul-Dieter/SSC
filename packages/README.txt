@@ -24,7 +24,9 @@ change means editing both. The places to look:
                    four <article class="tier-card"> wedding packages
   floral.html      the ceremony and reception tier-cards, the add-ons
                    price-list, and the <p class="product-price"> on each card
-  planning.html    the three planning tier-cards and the add-ons price-list
+  planning.html    the three planning tier-cards, the add-ons price-list, and
+                   the "Questions about cost" FAQ (both the visible answers
+                   and the FAQPage JSON-LD in <head>)
   websites.html    the three website tier-cards (the R2 000 and R3 500 prices
                    also appear on stationery.html as the Wedding Website card)
 
