@@ -549,6 +549,9 @@ body::after {
   font-family: var(--font-body);
   font-weight: 500;
   font-size: 0.8rem;
+  /* Explicit so a <button> (Send Enquiry) matches an <a>; browsers give
+     buttons line-height: normal, which made it 9px shorter. */
+  line-height: 1.7;
   text-transform: uppercase;
   letter-spacing: 2.5px;
   overflow: hidden;
@@ -600,7 +603,9 @@ body::after {
   background: var(--foil);
   background-size: 200% auto;
   color: #241d10;
-  border: none;
+  /* Transparent rather than none, so it is the same height as .btn-ghost
+     beside it in the hero, which has a 1px border. */
+  border: 1px solid transparent;
   animation: foilShimmer 7s ease-in-out infinite;
 }
 .btn-gold:hover {
@@ -2869,6 +2874,7 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   font-weight: 600;
   letter-spacing: 1.2px;
   text-transform: uppercase;
+  white-space: nowrap;
   transition: var(--transition);
 }
 
@@ -3058,7 +3064,9 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
 
 .price-row .product-cta { align-self: auto; flex: none; }
 
-@media (max-width: 576px) {
+/* 600 not 576: from 577 to 589px "Overtime on the day" still overflowed
+   the single-line row. */
+@media (max-width: 600px) {
   .price-row { flex-wrap: wrap; gap: 8px 12px; }
   .price-row .spacer { display: none; }
   .price-row .name { width: 100%; }
@@ -3071,8 +3079,19 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
      edge instead. */
   .price-row .price { flex: 1; }
 
-  /* 9px of padding gave a 33px target. Thumbs want 44. */
-  .price-row .product-cta {
+  /* Long prices ("Price on enquiry", "R500 per extra hour") wrap inside
+     their own column instead of shoving the button onto a line of its own. */
+  .price-row .price {
+    min-width: 0;
+    white-space: normal;
+    line-height: 1.45;
+  }
+}
+
+/* 9px of padding gave a 33px target. Thumbs want 44. Every Add to enquiry
+   button takes it on phones - cards and price rows alike - so they match. */
+@media (max-width: 576px) {
+  .product-cta {
     min-height: 44px;
     padding: 12px 20px;
   }
