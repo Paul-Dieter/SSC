@@ -2292,6 +2292,11 @@ a:hover .link-arrow i, .link-arrow:hover i { transform: translateX(6px); }
   .review-track { scroll-behavior: auto; }
 }
 
+.review-more {
+  margin: clamp(26px, 3vw, 38px) 0 0;
+  text-align: center;
+}
+
 
 /* ---------- Contact ----------
    The old standalone Contact section is folded into the enquiry section on
